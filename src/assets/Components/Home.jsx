@@ -21,7 +21,7 @@ function Home() {
 
   const navigate=useNavigate();
 // Mock navigation handlers
-  const PREEM = (e) => { e.preventDefault(); navigate("/Pre_emptive") };
+  // const PREEM = (e) => { e.preventDefault(); navigate("/Pre_emptive") };
   const NONPREEM = (e) => { e.preventDefault(); navigate("/Non_Pre_emptive") };
   const AT = (e) => { e.preventDefault(); navigate("/at") };
   const BT = (e) => { e.preventDefault(); navigate("/bt") };
@@ -153,10 +153,10 @@ function Home() {
           {/* Learn More Dropdown - All Screens */}
           {showMore && (
             <div className="absolute left-4 right-4 sm:left-6 sm:right-auto mt-2 bg-white shadow-2xl rounded-lg flex flex-col space-y-2 p-3 sm:p-4 text-black z-50 sm:w-72 max-h-96 overflow-y-auto">
-              <button className="flex bg-gradient-to-r from-pink-600 to-yellow-400 rounded py-2.5 px-3 text-white hover:opacity-90 justify-between items-center" onClick={PREEM}>
+              {/* <button className="flex bg-gradient-to-r from-pink-600 to-yellow-400 rounded py-2.5 px-3 text-white hover:opacity-90 justify-between items-center" onClick={PREEM}>
                 <span className="text-sm sm:text-base font-medium">Pre-emptive</span>
                 <Pause size={18} className="flex-shrink-0" />
-              </button>
+              </button> */}
               <button className="flex bg-gradient-to-r from-pink-600 to-yellow-400 rounded py-2.5 px-3 text-white hover:opacity-90 justify-between items-center" onClick={NONPREEM}>
                 <span className="text-sm sm:text-base font-medium">Non Preemptive</span>
                 <Plane size={18} className="flex-shrink-0" />
