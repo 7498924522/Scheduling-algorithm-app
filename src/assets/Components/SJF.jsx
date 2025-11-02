@@ -143,7 +143,7 @@ function SJF() {
     <div className="p-2 sm:p-4 md:p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-4 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
-        <button className="flex items-center font-semibold text-sm sm:text-base bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 transition" onClick={Back}>
+        <button className="flex items-center font-semibold text-sm sm:text-base bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 mt-2  rounded-lg hover:bg-blue-600 transition" onClick={Back}>
           <ArrowLeft className="mr-2" size={20} /> EXIT
         </button>
         <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
@@ -206,11 +206,12 @@ function SJF() {
         </button>
       </div>
 
-      <div className="mt-14 flex gap-2">
-        <button className="bg-purple-600 text-white px-3 py-1 rounded font-bold border-2 border-white">
+      <div className="mt-8 sm:mt-10 md:mt-14 flex gap-2">
+        <button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-1 rounded font-bold border-2 border-white transition-all  text-xs sm:text-sm md:text-base">
           User Input Table
         </button>
       </div>
+
 
       {/* Process List Table - User Input table*/}
       {processes.length > 0 ? (
@@ -253,7 +254,7 @@ function SJF() {
       <div className="mt-4 flex gap-2">
         <button
           onClick={() => setShowGantt(!showGantt)}
-          className="bg-green-500 text-white px-3 py-2 rounded mt-10 font-bold"
+          className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-2 rounded mt-10 font-bold"
         >
           {showGantt ? "Hide Gantt Chart" : "Generate Gantt Chart"}
         </button>
@@ -387,7 +388,7 @@ function SJF() {
       <div className="mt-8 sm:mt-10 md:mt-14 flex gap-2">
         <button
           onClick={Table}
-          className="bg-purple-600 text-white px-3 py-1 rounded font-bold text-xs sm:text-sm md:text-base hover:bg-purple-700 transition"
+          className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-1 rounded font-bold text-xs sm:text-sm md:text-base  transition"
         >
           Show Solution Table
         </button>
@@ -395,7 +396,7 @@ function SJF() {
 
       {/* Solution Table */}
       {showSolution && ganttData.length > 0 && (
-        <div className="mt-5 bg-red-400 p-3 sm:p-4 rounded-md border-2 border-white">
+        <div className="mt-2 bg-red-400 p-3 sm:p-4 rounded-md border-2 border-white">
 
           <h2 className="text-sm sm:text-lg font-bold mb-4 text-center text-black">
             Solution Table (SJF NON Pre-emptive Scheduling)
@@ -449,13 +450,13 @@ function SJF() {
       {/* Basic Formula about the Average Information */}
       <div className="mt-6 sm:mt-8 md:mt-10 space-y-4">
         <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Turn Around Time:</h2>
+          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Turn Around Time:-</h2>
           <p className="text-white font-bold text-xs sm:text-sm md:text-base">
             Total Turn Around Time of All Processes / Number Of Processes
           </p>
         </div>
         <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Waiting Time:</h2>
+          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Waiting Time:-</h2>
           <p className="text-white font-bold text-xs sm:text-sm md:text-base">
             Total Waiting Time of All Processes / Number Of Processes
           </p>

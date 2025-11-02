@@ -2,10 +2,7 @@
   background-color: red;
 }
 .Back_button {
- /* background: linear-gradient(90deg, #ff7e5f, #feb47b); */
-/* background: linear-gradient(90deg, #ff4ecd, #7661dd); */
-/* background: linear-gradient(90deg, #00c6ff, #0072ff); */
-background: linear-gradient(90deg, #fbd786, #f7797d);
+ background: linear-gradient(90deg, #fbd786, #f7797d);
 
   display: flex;
   margin-top: 10px;
@@ -21,17 +18,10 @@ background: linear-gradient(90deg, #fbd786, #f7797d);
   color: aqua;
 }
 body {
-  background-image: url("src/adi.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
  
+ background-color: rgb(248, 209, 248);
 }
- /* body
- {
-  background-color: rgb(120, 120, 237);
- } */
+ 
 .INFOR {
   width: 700px;
   height: 370px;

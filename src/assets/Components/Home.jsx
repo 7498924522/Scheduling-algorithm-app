@@ -5,8 +5,8 @@ import { HomeIcon, Info, Mail, Github, Linkedin, ChevronDown, Pause, Plane, Cloc
 
 // Mock ProfileCard component
 const ProfileCard = () => (
-  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-300 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
-    P
+  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-300 rounded-full flex text-black items-center justify-center text-xs sm:text-sm font-bold">
+    R
   </div>
 );
 
@@ -19,10 +19,10 @@ function Home() {
     setShowMore(!showMore);
   };
 
-  const navigate=useNavigate();
-// Mock navigation handlers
-  // const PREEM = (e) => { e.preventDefault(); navigate("/Pre_emptive") };
-  const NONPREEM = (e) => { e.preventDefault(); navigate("/Non_Pre_emptive") };
+  const navigate = useNavigate();
+  // Mock navigation handlers
+  
+  const modes = (e) => { e.preventDefault(); navigate("/mode") };
   const AT = (e) => { e.preventDefault(); navigate("/at") };
   const BT = (e) => { e.preventDefault(); navigate("/bt") };
   const CT = (e) => { e.preventDefault(); navigate("/ct") };
@@ -31,9 +31,9 @@ function Home() {
   const Fcfs = (e) => { e.preventDefault(); navigate("/fcfs") };
   const Sjf = (e) => { e.preventDefault(); navigate("/sjf") };
   const RRR = (e) => { e.preventDefault(); navigate("/rr") };
-  const About_us = (e) => { e.preventDefault(); navigate("/about_us" ) ;  setMobileMenuOpen(false); };
-  const contact_us = (e) => { e.preventDefault();navigate("/contact_us" ); setMobileMenuOpen(false); };
-  const Priority = (e) => { e.preventDefault();  navigate("/priority_scheduling") };
+  const About_us = (e) => { e.preventDefault(); navigate("/about_us"); setMobileMenuOpen(false); };
+  const contact_us = (e) => { e.preventDefault(); navigate("/contact_us"); setMobileMenuOpen(false); };
+  const Priority = (e) => { e.preventDefault(); navigate("/priority_scheduling") };
   const BankerAlgo = (e) => { e.preventDefault(); console.log("Navigate to Banker"); };
   const OUT = (e) => { e.preventDefault(); navigate(-1) };
 
@@ -49,16 +49,16 @@ function Home() {
               <div className="text-lg sm:text-xl font-bold text-white">
                 MyScheduler
               </div>
-              
+
               <div className="flex items-center gap-3">
                 {/* Hamburger Menu Button */}
-                <button 
+                <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   className="text-white p-2"
                 >
                   {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
-                
+
                 <ProfileCard />
               </div>
             </div>
@@ -67,7 +67,7 @@ function Home() {
             <div className="mt-3">
               <button
                 onClick={toggleLearnMore}
-                className="bg-pink-500 text-white px-3 sm:px-4 py-1.5 sm:py-2 text-sm rounded hover:bg-pink-600 flex items-center gap-2"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 sm:px-4 py-1.5 sm:py-2 text-sm rounded flex items-center gap-2"
               >
                 <span>Learn More</span>
                 <ChevronDown
@@ -81,25 +81,25 @@ function Home() {
             {mobileMenuOpen && (
               <div className="absolute left-0 right-0 top-full bg-gradient-to-r from-blue-700 to-purple-800 shadow-lg">
                 <div className="px-4 py-3 space-y-3">
-                  <button 
+                  <button
                     className="w-full text-left text-white hover:text-yellow-400 flex items-center gap-2 py-2"
                   >
                     <HomeIcon size={20} /> Home
                   </button>
-                  <button 
+                  <button
                     onClick={About_us}
                     className="w-full text-left text-white hover:text-yellow-400 flex items-center gap-2 py-2"
                   >
                     <Info size={20} /> About Us
                   </button>
-                  <button 
+                  <button
                     onClick={contact_us}
                     className="w-full text-left text-white hover:text-yellow-400 flex items-center gap-2 py-2"
                   >
                     <Mail size={20} /> Contact Us
                   </button>
                   <button
-                    className="w-full bg-gray-500 rounded-lg px-4 py-2 hover:bg-gray-600 text-white font-semibold"
+                    className="w-full bg-gray-500 rounded-lg px-4 py-2  text-white font-semibold"
                     onClick={OUT}
                   >
                     Log-out
@@ -117,7 +117,7 @@ function Home() {
               </div>
               <button
                 onClick={toggleLearnMore}
-                className="bg-pink-500 text-white px-4 py-1 rounded hover:bg-gray-400 flex items-center space-x-1"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded  flex items-center space-x-1"
               >
                 <span>Learn More</span>
                 <ChevronDown
@@ -153,12 +153,9 @@ function Home() {
           {/* Learn More Dropdown - All Screens */}
           {showMore && (
             <div className="absolute left-4 right-4 sm:left-6 sm:right-auto mt-2 bg-white shadow-2xl rounded-lg flex flex-col space-y-2 p-3 sm:p-4 text-black z-50 sm:w-72 max-h-96 overflow-y-auto">
-              {/* <button className="flex bg-gradient-to-r from-pink-600 to-yellow-400 rounded py-2.5 px-3 text-white hover:opacity-90 justify-between items-center" onClick={PREEM}>
-                <span className="text-sm sm:text-base font-medium">Pre-emptive</span>
-                <Pause size={18} className="flex-shrink-0" />
-              </button> */}
-              <button className="flex bg-gradient-to-r from-pink-600 to-yellow-400 rounded py-2.5 px-3 text-white hover:opacity-90 justify-between items-center" onClick={NONPREEM}>
-                <span className="text-sm sm:text-base font-medium">Non Preemptive</span>
+            
+              <button className="flex bg-gradient-to-r from-pink-600 to-yellow-400 rounded py-2.5 px-3 text-white hover:opacity-90 justify-between items-center" onClick={modes}>
+                <span className="text-sm sm:text-base font-medium">Modes</span>
                 <Plane size={18} className="flex-shrink-0" />
               </button>
               <button className="flex bg-gradient-to-r from-pink-600 to-yellow-400 rounded py-2.5 px-3 text-white hover:opacity-90 justify-between items-center" onClick={AT}>
@@ -213,70 +210,220 @@ function Home() {
 
         {/* Algorithm Cards */}
         <div className="space-y-8 sm:space-y-12 md:space-y-16 lg:space-y-20">
-          {/* FCFS CPU Scheduling */}
-          <div className="w-full h-56 xs:h-64 sm:h-72 md:h-80 lg:h-96 rounded-lg sm:rounded-xl md:rounded-2xl flex flex-col items-center justify-center relative bg-gradient-to-br from-blue-500 to-cyan-400 shadow-lg hover:shadow-2xl hover:shadow-red-300/50 transition-all duration-300 p-4 ">
-            {/* <div className="absolute inset-0 bg-black/10 rounded-lg sm:rounded-xl md:rounded-2xl"></div> */}
-            <div className="relative z-10 flex flex-col items-center">
-               <div className="flex">
-              <p className="font-mono text-xs sm:text-sm md:text-base lg:text-lg mb-3 sm:mb-4 md:mb-5 text-white font-semibold flex items-center gap-2">
-              PERFORM FCFS
-                <ArrowRight size={20} />
-                
+          <div className="w-full h-56 xs:h-64 sm:h-72 md:h-80 lg:h-96 rounded-lg sm:rounded-xl md:rounded-2xl flex flex-row items-center relative bg-gradient-to-br from-blue-500 to-cyan-400 shadow-lg hover:shadow-2xl hover:shadow-cyan-300/50 transition-all duration-300 overflow-hidden">
+            {/* Left side - Image */}
+            <div className="w-2/5 h-full relative flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-500 p-4 sm:p-6">
+              <div className="relative w-full h-full flex items-center justify-center">
+                <svg viewBox="0 0 200 200" className="w-full h-full max-w-[180px] max-h-[180px]">
+                  {/* CPU Icon */}
+                  <rect x="50" y="50" width="100" height="100" rx="8" fill="white" opacity="0.95" />
+                  <rect x="65" y="65" width="70" height="70" rx="4" fill="#3b82f6" />
+
+                  {/* CPU Pins */}
+                  <rect x="35" y="60" width="10" height="3" fill="white" />
+                  <rect x="35" y="75" width="10" height="3" fill="white" />
+                  <rect x="35" y="90" width="10" height="3" fill="white" />
+                  <rect x="35" y="105" width="10" height="3" fill="white" />
+                  <rect x="35" y="120" width="10" height="3" fill="white" />
+
+                  <rect x="155" y="60" width="10" height="3" fill="white" />
+                  <rect x="155" y="75" width="10" height="3" fill="white" />
+                  <rect x="155" y="90" width="10" height="3" fill="white" />
+                  <rect x="155" y="105" width="10" height="3" fill="white" />
+                  <rect x="155" y="120" width="10" height="3" fill="white" />
+
+                  {/* Queue visualization */}
+                  <rect x="75" y="155" width="15" height="20" rx="2" fill="#22d3ee" opacity="0.9" />
+                  <rect x="95" y="155" width="15" height="20" rx="2" fill="#22d3ee" opacity="0.7" />
+                  <rect x="115" y="155" width="15" height="20" rx="2" fill="#22d3ee" opacity="0.5" />
+
+                  {/* Arrow */}
+                  <path d="M 100 145 L 100 155" stroke="white" strokeWidth="2" fill="none" />
+                  <path d="M 100 155 L 95 150 M 100 155 L 105 150" stroke="white" strokeWidth="2" fill="none" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Right side - Content */}
+            <div className="w-3/5 h-full flex flex-col items-start justify-center p-4 sm:p-6 md:p-8 lg:p-10">
+              <h3 className="font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl text-white mb-2 sm:mb-3">
+                FCFS Algorithm
+              </h3>
+              <p className="text-white/90 text-xs sm:text-sm md:text-base mb-4 sm:mb-6 leading-relaxed">
+                First Come First Served schedules processes in the order they arrive. Simple and fair, but may cause long wait times.
               </p>
-              <button className="bg-gradient-to-br from-blue-400 to-cyan-300 shadow-lg h-9 sm:h-10 md:h-11 rounded-md w-28 sm:w-36 md:w-40 text-xs sm:text-sm md:text-base font-medium hover:shadow-lg hover:scale-105 transition-all" onClick={Fcfs}>
-                Click Here
-              </button>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <button
+                  className="bg-white text-blue-600 shadow-lg h-9 sm:h-10 md:h-11 rounded-lg px-4 sm:px-6 md:px-8 text-xs sm:text-sm md:text-base font-semibold hover:shadow-xl hover:scale-105 transition-all duration-200 flex items-center gap-2"
+                  onClick={Fcfs}
+                >
+                  PERFORM FCFS
+                  <ArrowRight size={18} className="sm:w-5 sm:h-5" />
+                </button>
               </div>
             </div>
           </div>
 
           {/* SJF CPU Scheduling */}
-          <div className="w-full h-56 xs:h-64 sm:h-72 md:h-80 lg:h-96 rounded-lg sm:rounded-xl md:rounded-2xl flex flex-col items-center justify-center relative bg-gradient-to-br from-green-500 to-teal-400 shadow-lg hover:shadow-2xl hover:shadow-red-300/50 transition-all duration-300 p-4">
-            <div className="absolute inset-0 bg-black/10 rounded-lg sm:rounded-xl md:rounded-2xl"></div>
-            <div className="relative z-10 flex flex-col items-center">
-              <div className="flex">
-              <p className="font-mono text-xs sm:text-sm md:text-base lg:text-lg mb-3 sm:mb-4 md:mb-5 text-white font-semibold flex items-center gap-2">
-              PERFORM SJF
-                <ArrowRight size={20} />
-                
+          <div className="w-full h-56 xs:h-64 sm:h-72 md:h-80 lg:h-96 rounded-lg sm:rounded-xl md:rounded-2xl flex flex-row items-center relative bg-gradient-to-br from-green-500 to-teal-400 shadow-lg hover:shadow-2xl hover:shadow-teal-300/50 transition-all duration-300 overflow-hidden">
+            {/* Left side - Image */}
+            <div className="w-2/5 h-full relative flex items-center justify-center bg-gradient-to-br from-green-600 to-green-500 p-2 sm:p-4 md:p-6">
+              <div className="relative w-full h-full flex items-center justify-center">
+                <svg viewBox="0 0 200 200" className="w-full h-full max-w-[180px] max-h-[180px]">
+                  {/* CPU Icon */}
+                  <rect x="50" y="50" width="100" height="100" rx="8" fill="white" opacity="0.95" />
+                  <rect x="65" y="65" width="70" height="70" rx="4" fill="#10b981" />
+
+                  {/* CPU Pins */}
+                  <rect x="35" y="60" width="10" height="3" fill="white" />
+                  <rect x="35" y="75" width="10" height="3" fill="white" />
+                  <rect x="35" y="90" width="10" height="3" fill="white" />
+                  <rect x="35" y="105" width="10" height="3" fill="white" />
+                  <rect x="35" y="120" width="10" height="3" fill="white" />
+
+                  <rect x="155" y="60" width="10" height="3" fill="white" />
+                  <rect x="155" y="75" width="10" height="3" fill="white" />
+                  <rect x="155" y="90" width="10" height="3" fill="white" />
+                  <rect x="155" y="105" width="10" height="3" fill="white" />
+                  <rect x="155" y="120" width="10" height="3" fill="white" />
+
+                  {/* Queue visualization */}
+                  <rect x="75" y="155" width="15" height="20" rx="2" fill="#22d3ee" opacity="0.9" />
+                  <rect x="95" y="155" width="15" height="20" rx="2" fill="#22d3ee" opacity="0.7" />
+                  <rect x="115" y="155" width="15" height="20" rx="2" fill="#22d3ee" opacity="0.5" />
+
+                  {/* Arrow */}
+                  <path d="M 100 145 L 100 155" stroke="white" strokeWidth="2" fill="none" />
+                  <path d="M 100 155 L 95 150 M 100 155 L 105 150" stroke="white" strokeWidth="2" fill="none" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Right side - Content */}
+            <div className="w-3/5 h-full flex flex-col items-start justify-center p-4 sm:p-6 md:p-8 lg:p-10">
+              <h3 className="font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl text-white mb-2 sm:mb-3">
+                SJF Algorithm
+              </h3>
+              <p className="text-white/90 text-xs sm:text-sm md:text-base mb-4 sm:mb-6 leading-relaxed">
+                Shortest Job First schedules the process with the smallest execution time first. Minimizes average waiting time efficiently.
               </p>
-              <button className="bg-gradient-to-tr from-green-400 to-blue-300 h-9 sm:h-10 md:h-11 rounded-md w-28 sm:w-36 md:w-40 text-xs sm:text-sm md:text-base font-medium hover:shadow-lg hover:scale-105 transition-all" onClick={Sjf}>
-                Click Here
-              </button>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <button
+                  className="bg-white text-green-600 shadow-lg h-9 sm:h-10 md:h-11 rounded-lg px-4 sm:px-6 md:px-8 text-xs sm:text-sm md:text-base font-semibold hover:shadow-xl hover:scale-105 transition-all duration-200 flex items-center gap-2"
+                  onClick={Sjf}
+                >
+                  PERFORM SJF
+                  <ArrowRight size={18} className="sm:w-5 sm:h-5" />
+                </button>
               </div>
             </div>
           </div>
 
           {/* Priority Scheduling */}
-          <div className="w-full h-56 xs:h-64 sm:h-72 md:h-80 lg:h-96 rounded-lg sm:rounded-xl md:rounded-2xl flex flex-col items-center justify-center relative bg-gradient-to-br from-orange-500 to-red-400 shadow-lg hover:shadow-2xl hover:shadow-red-300/50 transition-all duration-300 p-4">
-            <div className="absolute inset-0 bg-black/10 rounded-lg sm:rounded-xl md:rounded-2xl"></div>
-            <div className="relative z-10 flex flex-col items-center">
-             <div className="flex">
-              <p className="font-mono text-xs sm:text-sm md:text-base lg:text-lg mb-3 sm:mb-4 md:mb-5 text-white font-semibold flex items-center gap-2">
-              PERFORM PRIORITY
-                <ArrowRight size={20} />
-                
+          <div className="w-full h-56 xs:h-64 sm:h-72 md:h-80 lg:h-96 rounded-lg sm:rounded-xl md:rounded-2xl flex flex-row items-center relative bg-gradient-to-br from-orange-500 to-red-400 shadow-lg hover:shadow-2xl hover:shadow-red-300/50 transition-all duration-300 overflow-hidden">
+            {/* Left side - Image */}
+            <div className="w-2/5 h-full relative flex items-center justify-center bg-orange-600 p-2 sm:p-4 md:p-6">
+              <div className="relative w-full h-full flex items-center justify-center">
+                <svg viewBox="0 0 200 200" className="w-full h-full max-w-[180px] max-h-[180px]">
+                  {/* CPU Icon */}
+                  <rect x="50" y="50" width="100" height="100" rx="8" fill="white" opacity="0.95" />
+                  <rect x="65" y="65" width="70" height="70" rx="4" fill="#f97316" />
+
+                  {/* CPU Pins */}
+                  <rect x="35" y="60" width="10" height="3" fill="white" />
+                  <rect x="35" y="75" width="10" height="3" fill="white" />
+                  <rect x="35" y="90" width="10" height="3" fill="white" />
+                  <rect x="35" y="105" width="10" height="3" fill="white" />
+                  <rect x="35" y="120" width="10" height="3" fill="white" />
+
+                  <rect x="155" y="60" width="10" height="3" fill="white" />
+                  <rect x="155" y="75" width="10" height="3" fill="white" />
+                  <rect x="155" y="90" width="10" height="3" fill="white" />
+                  <rect x="155" y="105" width="10" height="3" fill="white" />
+                  <rect x="155" y="120" width="10" height="3" fill="white" />
+
+                  {/* Queue visualization */}
+                  <rect x="75" y="155" width="15" height="20" rx="2" fill="#fb923c" opacity="0.9" />
+                  <rect x="95" y="155" width="15" height="20" rx="2" fill="#fb923c" opacity="0.7" />
+                  <rect x="115" y="155" width="15" height="20" rx="2" fill="#fb923c" opacity="0.5" />
+                  {/* Arrow */}
+                  <path d="M 100 145 L 100 155" stroke="white" strokeWidth="2" fill="none" />
+                  <path d="M 100 155 L 95 150 M 100 155 L 105 150" stroke="white" strokeWidth="2" fill="none" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Right side - Content */}
+            <div className="w-3/5 h-full flex flex-col items-start justify-center p-4 sm:p-6 md:p-8 lg:p-10">
+              <h3 className="font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl text-white mb-2 sm:mb-3">
+                Priority Algorithm
+              </h3>
+              <p className="text-white/90 text-xs sm:text-sm md:text-base mb-4 sm:mb-6 leading-relaxed">
+                Priority Scheduling executes processes based on their priority level. Higher priority processes run first, ensuring critical tasks complete quickly.
               </p>
-              <button className="bg-gradient-to-br from-orange-400 to-red-300 shadow-lg h-9 sm:h-10 md:h-11 rounded-md w-28 sm:w-36 md:w-40 text-xs sm:text-sm md:text-base font-medium hover:shadow-lg hover:scale-105 transition-all" onClick={Priority}>
-                Click Here
-              </button>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <button
+                  className="bg-white text-orange-600 shadow-lg h-9 sm:h-10 md:h-11 rounded-lg px-4 sm:px-6 md:px-8 text-xs sm:text-sm md:text-base font-semibold hover:shadow-xl hover:scale-105 transition-all duration-200 flex items-center gap-2"
+                  onClick={Priority}
+                >
+                  PERFORM PRIORITY
+                  <ArrowRight size={18} className="sm:w-5 sm:h-5" />
+                </button>
               </div>
             </div>
           </div>
 
+       
           {/* Round Robin Scheduling */}
-          <div className="w-full h-56 xs:h-64 sm:h-72 md:h-80 lg:h-96 rounded-lg sm:rounded-xl md:rounded-2xl flex flex-col items-center justify-center relative bg-gradient-to-br from-indigo-500 to-purple-400 shadow-lg hover:shadow-2xl hover:shadow-red-300/50 transition-all duration-300 p-4">
-            <div className="absolute inset-0 bg-black/10 rounded-lg sm:rounded-xl md:rounded-2xl"></div>
-            <div className="relative z-10 flex flex-col items-center">
-             <div className="flex">
-              <p className="font-mono text-xs sm:text-sm md:text-base lg:text-lg mb-3 sm:mb-4 md:mb-5 text-white font-semibold flex items-center gap-2">
-              PERFORM ROUND ROBIN
-                <ArrowRight size={20} />
-                
+          <div className="w-full h-56 xs:h-64 sm:h-72 md:h-80 lg:h-96 rounded-lg sm:rounded-xl md:rounded-2xl flex flex-row items-center relative bg-gradient-to-br from-indigo-500 to-purple-400 shadow-lg hover:shadow-2xl hover:shadow-purple-300/50 transition-all duration-300 overflow-hidden">
+            {/* Left side - Image */}
+            <div className="w-2/5 h-full relative flex items-center justify-center  bg-purple-800  p-2 sm:p-4 md:p-6">
+              <div className="relative w-full h-full flex items-center justify-center">
+                <svg viewBox="0 0 200 200" className="w-full h-full max-w-[180px] max-h-[180px]">
+                  {/* CPU Icon */}
+                  <rect x="50" y="50" width="100" height="100" rx="8" fill="white" opacity="0.95" />
+                  <rect x="65" y="65" width="70" height="70" rx="4" fill="#a855f7" />
+
+                  {/* CPU Pins */}
+                  <rect x="35" y="60" width="10" height="3" fill="white" />
+                  <rect x="35" y="75" width="10" height="3" fill="white" />
+                  <rect x="35" y="90" width="10" height="3" fill="white" />
+                  <rect x="35" y="105" width="10" height="3" fill="white" />
+                  <rect x="35" y="120" width="10" height="3" fill="white" />
+
+                  <rect x="155" y="60" width="10" height="3" fill="white" />
+                  <rect x="155" y="75" width="10" height="3" fill="white" />
+                  <rect x="155" y="90" width="10" height="3" fill="white" />
+                  <rect x="155" y="105" width="10" height="3" fill="white" />
+                  <rect x="155" y="120" width="10" height="3" fill="white" />
+
+                  {/* Queue visualization */}
+                  <rect x="75" y="155" width="15" height="20" rx="2" fill="#c084fc" opacity="0.9" />
+                  <rect x="95" y="155" width="15" height="20" rx="2" fill="#c084fc" opacity="0.7" />
+                  <rect x="115" y="155" width="15" height="20" rx="2" fill="#c084fc" opacity="0.5" />
+                  {/* Arrow */}
+                  <path d="M 100 145 L 100 155" stroke="white" strokeWidth="2" fill="none" />
+                  <path d="M 100 155 L 95 150 M 100 155 L 105 150" stroke="white" strokeWidth="2" fill="none" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Right side - Content */}
+            <div className="w-3/5 h-full flex flex-col items-start justify-center p-4 sm:p-6 md:p-8 lg:p-10">
+              <h3 className="font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl text-white mb-2 sm:mb-3">
+                Round Robin Algorithm
+              </h3>
+              <p className="text-white/90 text-xs sm:text-sm md:text-base mb-4 sm:mb-6 leading-relaxed">
+                Round Robin assigns each process a fixed time quantum in circular order. Ensures fair CPU allocation and prevents starvation.
               </p>
-              <button className="bg-gradient-to-br from-indigo-400 to-purple-00 shadow-lg h-9 sm:h-10 md:h-11 rounded-md w-28 sm:w-36 md:w-40 text-xs sm:text-sm md:text-base font-medium hover:shadow-lg hover:scale-105 transition-all" onClick={RRR}>
-                Click Here
-              </button>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <button
+                  className="bg-white text-indigo-600 shadow-lg h-9 sm:h-10 md:h-11 rounded-lg px-4 sm:px-6 md:px-8 text-xs sm:text-sm md:text-base font-semibold hover:shadow-xl hover:scale-105 transition-all duration-200 flex items-center gap-2"
+                  onClick={RRR}
+                >
+                  PERFORM Round Robin
+                  <ArrowRight size={18} className="sm:w-5 sm:h-5" />
+                </button>
               </div>
             </div>
           </div>

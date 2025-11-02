@@ -197,7 +197,7 @@ function PrioritySche() {
     <div className="p-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-4 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
-        <button className="flex items-center font-semibold text-sm sm:text-base bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 transition" onClick={Back}>
+        <button className="flex items-center font-semibold text-sm sm:text-base bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 mt-2  rounded-lg hover:bg-blue-600 transition" onClick={Back}>
           <ArrowLeft className="mr-2" size={20} /> EXIT
         </button>
         <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
@@ -306,11 +306,12 @@ function PrioritySche() {
         </button>
       </div>
 
-      <div className="mt-14 flex gap-2">
-        <button className="bg-purple-600 text-white px-3 py-1 rounded font-bold border-2 border-white">
+      <div className="mt-8 sm:mt-10 md:mt-14 flex gap-2">
+        <button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-1 rounded font-bold border-2 border-white transition-all  text-xs sm:text-sm md:text-base">
           User Input Table
         </button>
       </div>
+
 
       {/* Process List Table */}
       {processes.length > 0 ? (
@@ -355,7 +356,7 @@ function PrioritySche() {
         <button
           onClick={generateGanttChart}
           disabled={!priorityRule}
-          className="bg-green-500 px-4 py-2 text-white text-center font-bold rounded"
+          className="bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2 text-white text-center font-bold rounded"
         >
           Generate Gantt Chart
         </button>
@@ -363,7 +364,7 @@ function PrioritySche() {
 
       {/* Gantt Chart */}
       {showGantt && ganttBlocks.length > 0 && (
-        <div className="mt-3 bg-red-400 p-3 sm:p-4 rounded-md border-2 border-white">
+        <div className="mt-2 bg-red-400 p-3 sm:p-4 rounded-md border-2 border-white">
 
           {/* Gantt Chart */}
           <h2 className="text-center text-base sm:text-lg md:text-xl mb-2 text-white font-bold">
@@ -404,7 +405,7 @@ function PrioritySche() {
                     CPU Idle from <u className="text-black">{p.start}</u> ms to{" "}
                     <u className="text-black">{p.end}</u> ms
                     <u className="text-black"> --CPU--</u>
-                  
+
                   </marquee>
                 )
             )}
@@ -416,30 +417,30 @@ function PrioritySche() {
           <div className="flex flex-col mt-8 p-3 rounded-md justify-center bg-cyan-100">
 
             <div className="border-2 border-black p-2 sm:p-3 rounded-md">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="text-black font-semibold text-sm sm:text-base md:text-lg">BASIC IDEA</h3>
-                            <Lightbulb className="text-yellow-500" size={20} />
-                          </div>
-                          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm">
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium">* EXECUTING PROCESSES</p>
-                              <ArrowRight size={16} />
-                              <span className="text-black font-semibold px-2 py-1 rounded bg-green-300 border-2 border-black whitespace-nowrap">PROCESS</span>
-                            </div>
-            
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium">** READY PROCESSES</p>
-                              <ArrowRight size={16} />
-                              <span className="text-black font-semibold px-2 py-1 rounded bg-white border-2 border-black whitespace-nowrap">PROCESS</span>
-                            </div>
-            
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium">*** IDLE PROCESSES</p>
-                              <ArrowRight size={16} />
-                              <span className="text-black font-semibold px-2 py-1 rounded bg-yellow-100 border-2 border-black whitespace-nowrap">PROCESS</span>
-                            </div>
-                          </div>
-                        </div>
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-black font-semibold text-sm sm:text-base md:text-lg">BASIC IDEA</h3>
+                <Lightbulb className="text-yellow-500" size={20} />
+              </div>
+              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm">
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">* EXECUTING PROCESSES</p>
+                  <ArrowRight size={16} />
+                  <span className="text-black font-semibold px-2 py-1 rounded bg-green-300 border-2 border-black whitespace-nowrap">PROCESS</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">** READY PROCESSES</p>
+                  <ArrowRight size={16} />
+                  <span className="text-black font-semibold px-2 py-1 rounded bg-white border-2 border-black whitespace-nowrap">PROCESS</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">*** IDLE PROCESSES</p>
+                  <ArrowRight size={16} />
+                  <span className="text-black font-semibold px-2 py-1 rounded bg-yellow-100 border-2 border-black whitespace-nowrap">PROCESS</span>
+                </div>
+              </div>
+            </div>
 
             <h2 className="text-center text-base sm:text-lg md:text-xl font-bold text-black mb-4">
               Ready Queue Timeline
@@ -496,65 +497,65 @@ function PrioritySche() {
       {/* Show Solution Table */}
       <button
         onClick={Table}
-        className="bg-purple-600 px-4 py-2 mt-10 text-white text-center font-bold rounded"
+        className="bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2 mt-10 text-white text-center font-bold rounded"
       >
         Show Solution Table
       </button>
 
       {/* Solution Table */}
-{show && finalProcesses.length > 0 && (
-  <div className="mt-5 bg-red-400 p-2 sm:p-4 rounded-md border-2 border-white overflow-x-auto">
+      {show && finalProcesses.length > 0 && (
+        <div className="mt-2 bg-red-400 p-2 sm:p-4 rounded-md border-2 border-white overflow-x-auto">
 
-    <div className="text-center">
-      <span className="text-lg sm:text-xl font-bold mb-4 text-center text-black">
-        Solution Table (Non-Preemptive Priority Scheduling)
-      </span>
-    </div>
+          <div className="text-center">
+            <span className="text-lg sm:text-xl font-bold mb-4 text-center text-black">
+              Solution Table (Non-Preemptive Priority Scheduling)
+            </span>
+          </div>
 
-    <table className="border-collapse border border-gray-500 w-full mt-6 text-[10px] sm:text-sm md:text-base min-w-[700px]">
-      <thead className="bg-red-400">
-        <tr>
-          <th className="border border-black px-2 sm:px-4 py-1">Process</th>
-          <th className="border border-black px-2 sm:px-4 py-1">Priority</th>
-          <th className="border border-black px-2 sm:px-4 py-1">
-            Arrival Time (ms)
-          </th>
-          <th className="border border-black px-2 sm:px-4 py-1">Burst Time (ms)</th>
-          <th className="border border-black px-2 sm:px-4 py-1">
-            Completion Time (ms)
-          </th>
-          <th className="border border-black px-2 sm:px-4 py-1">
-            Turn Around Time (CT-AT)
-          </th>
-          <th className="border border-black px-2 sm:px-4 py-1">
-            Waiting Time (TAT-BT)
-          </th>
-        </tr>
-      </thead>
+          <table className="border-collapse border border-gray-500 w-full mt-6 text-[10px] sm:text-sm md:text-base min-w-[700px]">
+            <thead className="bg-red-400">
+              <tr>
+                <th className="border border-black px-2 sm:px-4 py-1">Process</th>
+                <th className="border border-black px-2 sm:px-4 py-1">Priority</th>
+                <th className="border border-black px-2 sm:px-4 py-1">
+                  Arrival Time (ms)
+                </th>
+                <th className="border border-black px-2 sm:px-4 py-1">Burst Time (ms)</th>
+                <th className="border border-black px-2 sm:px-4 py-1">
+                  Completion Time (ms)
+                </th>
+                <th className="border border-black px-2 sm:px-4 py-1">
+                  Turn Around Time (CT-AT)
+                </th>
+                <th className="border border-black px-2 sm:px-4 py-1">
+                  Waiting Time (TAT-BT)
+                </th>
+              </tr>
+            </thead>
 
-      <tbody>
-        {finalProcesses.map((g, index) => (
-          <tr key={index}>
-            <td className="border text-center bg-cyan-200 border-black py-1">{g.process}</td>
-            <td className="border text-center bg-cyan-200 border-black py-1">{g.priority}</td>
-            <td className="border text-center bg-cyan-200 border-black py-1">{g.at} ms</td>
-            <td className="border text-center bg-cyan-200 border-black py-1">{g.bt} ms</td>
-            <td className="border text-center bg-cyan-200 border-black py-1">{g.ct} ms</td>
-            <td className="border text-center bg-cyan-200 border-black py-1">{g.tat} ms</td>
-            <td className="border text-center bg-cyan-200 border-black py-1">{g.wt} ms</td>
-          </tr>
-        ))}
+            <tbody>
+              {finalProcesses.map((g, index) => (
+                <tr key={index}>
+                  <td className="border text-center bg-cyan-200 border-black py-1">{g.process}</td>
+                  <td className="border text-center bg-cyan-200 border-black py-1">{g.priority}</td>
+                  <td className="border text-center bg-cyan-200 border-black py-1">{g.at} ms</td>
+                  <td className="border text-center bg-cyan-200 border-black py-1">{g.bt} ms</td>
+                  <td className="border text-center bg-cyan-200 border-black py-1">{g.ct} ms</td>
+                  <td className="border text-center bg-cyan-200 border-black py-1">{g.tat} ms</td>
+                  <td className="border text-center bg-cyan-200 border-black py-1">{g.wt} ms</td>
+                </tr>
+              ))}
 
-        <tr className="bg-yellow-300 font-bold">
-          <td className="border text-center border-black py-1" colSpan={5}>Averages</td>
-          <td className="border text-center border-black py-1">{AvgTat} ms</td>
-          <td className="border text-center border-black py-1">{AvgWt} ms</td>
-        </tr>
-      </tbody>
-    </table>
-    
-  </div>
-)}
+              <tr className="bg-yellow-300 font-bold">
+                <td className="border text-center border-black py-1" colSpan={5}>Averages</td>
+                <td className="border text-center border-black py-1">{AvgTat} ms</td>
+                <td className="border text-center border-black py-1">{AvgWt} ms</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      )}
 
 
       {/* Average Info */}

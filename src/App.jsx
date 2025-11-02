@@ -35,8 +35,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/about_us" element={<AboutUs />} />
           <Route path="/contact_us" element={<ContactUs />} />
-          {/* <Route path="/Pre_emptive" element={<Preemptive />} /> */}
-          <Route path="/Non_Pre_emptive" element={<Nonpreemptive />} />
+          <Route path="/mode" element={<Nonpreemptive />} />
           <Route path="/at" element={<At />} />
           <Route path="/bt" element={<Bt />} />
           <Route path="/ct" element={<Ct />} />

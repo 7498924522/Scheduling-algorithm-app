@@ -15,7 +15,7 @@ function ContactUs() {
           <button className="Back_button" onClick={Back}>
             <RiArrowLeftDoubleFill className="ml-6" /> BACK
           </button>
-          <h2>Contact Us</h2>
+          <h2>Hello Guy's</h2>
         </div>
   )
 }

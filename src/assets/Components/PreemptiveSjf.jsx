@@ -163,11 +163,11 @@ function PreemptiveSjf() {
 
   return (
     <div className="p-4">
-       <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-4 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
-        <button className="flex items-center font-semibold text-sm sm:text-base bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 transition" onClick={Back}>
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-4 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
+        <button className="flex items-center font-semibold text-sm sm:text-base bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 mt-2  rounded-lg hover:bg-blue-600 transition" onClick={Back}>
           <ArrowLeft className="mr-2" size={20} /> EXIT
         </button>
-         <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
+        <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
           Mode :-
           <u>
             <select
@@ -178,7 +178,7 @@ function PreemptiveSjf() {
                 Pre-Emptive
               </option>
               <option value="Non-preemptive">Non-Pre-Emptive</option>
-              
+
             </select>
           </u>
         </h2>
@@ -228,11 +228,12 @@ function PreemptiveSjf() {
         </button>
       </div>
 
-      <div className="mt-14 flex gap-2">
-        <button className="bg-purple-600 text-white px-3 py-1 rounded font-bold border-2 border-white">
+      <div className="mt-8 sm:mt-10 md:mt-14 flex gap-2">
+        <button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-1 rounded font-bold border-2 border-white transition-all  text-xs sm:text-sm md:text-base">
           User Input Table
         </button>
       </div>
+
 
       {/* Process Table */}
       {processes.length > 0 ? (
@@ -269,46 +270,46 @@ function PreemptiveSjf() {
       <div className="mt-10 flex gap-4">
         <button
           onClick={() => setShow(!show)}
-          className="bg-green-500 text-white rounded h-auto w-auto p-2 font-bold"
+          className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded h-auto w-auto p-2 font-bold"
         >
           {show ? "Hide Gantt Chart" : "Generate Gantt Chart"}
         </button>
         <button
           onClick={generateGantt}
-          className="bg-green-500 text-white rounded h-auto w-auto p-2 font-bold"
+          className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded h-auto w-auto p-2 font-bold"
         >
           Calculate Solution (Run Simulation)
         </button>
       </div>
 
       {show && ganttData.length > 0 && (
-        <div className="mt-4 bg-red-400 h-auto py-6 p-4 border-2 rounded-md">
+        <div className="mt-2 bg-red-400 h-auto py-6 p-4 border-2 rounded-md">
 
           <h2 className="text-xl font-bold mb-3 text-center text-white">
             Gantt Chart
           </h2>
 
-         <div className="flex items-end justify-center overflow-x-auto gap-2 mt-3 p-1">
-  {ganttData.map((g, i) => (
-    <div key={i} className="text-center relative flex flex-col items-center">
-      
-      <div
-        className={`${g.process === "IDLE" ? "bg-gray-500" : "bg-green-500"} 
+          <div className="flex items-end justify-center overflow-x-auto gap-2 mt-3 p-1">
+            {ganttData.map((g, i) => (
+              <div key={i} className="text-center relative flex flex-col items-center">
+
+                <div
+                  className={`${g.process === "IDLE" ? "bg-gray-500" : "bg-green-500"} 
         font-bold text-white 
         text-xs sm:text-sm md:text-lg 
         py-1 rounded shadow-md
         w-14 sm:w-28 md:w-36`}
-      >
-        {g.process}
-      </div>
+                >
+                  {g.process}
+                </div>
 
-      <div className="flex justify-between w-full text-[10px] sm:text-sm md:text-lg mt-1 text-white font-bold">
-        <span>{g.start}</span>
-        {i === ganttData.length - 1 && <span>{g.end}</span>}
-      </div>
-    </div>
-  ))}
-</div>
+                <div className="flex justify-between w-full text-[10px] sm:text-sm md:text-lg mt-1 text-white font-bold">
+                  <span>{g.start}</span>
+                  {i === ganttData.length - 1 && <span>{g.end}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
 
           {/* IDLE Marquee */}
           <div className="mt-5">
@@ -332,35 +333,35 @@ function PreemptiveSjf() {
 
 
 
-       
+
 
           {/* BASIC IDEA SECTION */}
           <div className="flex flex-col justify-center p-3 rounded-md bg-cyan-100 mt-6">
             <div className="border-2 border-black p-2 sm:p-3 rounded-md">
-                                    <div className="flex items-center gap-2 mb-2">
-                                      <h3 className="text-black font-semibold text-sm sm:text-base md:text-lg">BASIC IDEA</h3>
-                                      <Lightbulb className="text-yellow-500" size={20} />
-                                    </div>
-                                    <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm">
-                                      <div className="flex items-center gap-2">
-                                        <p className="font-medium">* EXECUTING PROCESSES</p>
-                                        <ArrowRight size={16} />
-                                        <span className="text-black font-semibold px-2 py-1 rounded bg-green-300 border-2 border-black whitespace-nowrap">PROCESS</span>
-                                      </div>
-                                      
-                                      <div className="flex items-center gap-2">
-                                        <p className="font-medium">** READY PROCESSES</p>
-                                        <ArrowRight size={16} />
-                                        <span className="text-black font-semibold px-2 py-1 rounded bg-white border-2 border-black whitespace-nowrap">PROCESS</span>
-                                      </div>
-                                      
-                                      <div className="flex items-center gap-2">
-                                        <p className="font-medium">*** IDLE PROCESSES</p>
-                                        <ArrowRight size={16} />
-                                        <span className="text-black font-semibold px-2 py-1 rounded bg-yellow-100 border-2 border-black whitespace-nowrap">PROCESS</span>
-                                      </div>
-                                    </div>
-                                  </div>
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-black font-semibold text-sm sm:text-base md:text-lg">BASIC IDEA</h3>
+                <Lightbulb className="text-yellow-500" size={20} />
+              </div>
+              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm">
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">* EXECUTING PROCESSES</p>
+                  <ArrowRight size={16} />
+                  <span className="text-black font-semibold px-2 py-1 rounded bg-green-300 border-2 border-black whitespace-nowrap">PROCESS</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">** READY PROCESSES</p>
+                  <ArrowRight size={16} />
+                  <span className="text-black font-semibold px-2 py-1 rounded bg-white border-2 border-black whitespace-nowrap">PROCESS</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">*** IDLE PROCESSES</p>
+                  <ArrowRight size={16} />
+                  <span className="text-black font-semibold px-2 py-1 rounded bg-yellow-100 border-2 border-black whitespace-nowrap">PROCESS</span>
+                </div>
+              </div>
+            </div>
             {/* READY QUEUE TIMELINE */}
             <h2 className="text-lg font-bold mb-2 mt-6 text-center text-black">
               Ready Queue Timeline
@@ -376,8 +377,8 @@ function PreemptiveSjf() {
                     <div
                       key={`rq-${idx}-${proc.id}`}
                       className={`text-black font-semibold mx-1 p-1 rounded w-full text-center ${isSelected
-                          ? "bg-green-300 line-through"
-                          : "bg-white"
+                        ? "bg-green-300 line-through"
+                        : "bg-white"
                         }`}
                     >
                       P{proc.id}
@@ -420,96 +421,96 @@ function PreemptiveSjf() {
 
       <button
         onClick={Table}
-        className="bg-purple-600 text-white rounded h-auto w-auto mt-20 font-bold p-2"
+        className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded h-auto w-auto mt-20 font-bold p-2"
       >
         Show Solution Table
       </button>
 
       {/* Solution Table */}
-    {showT && ganttData.length > 0 && (
-  <div className="mt-5 bg-red-400 p-3 sm:p-4 rounded-md border-2 border-white">
+      {showT && ganttData.length > 0 && (
+        <div className="mt-2 bg-red-400 p-3 sm:p-4 rounded-md border-2 border-white">
 
-    <h2 className="text-sm sm:text-lg font-bold text-center text-black mb-4">
-      Solution Table (Pre-emptive SJF Scheduling)
-    </h2>
+          <h2 className="text-sm sm:text-lg font-bold text-center text-black mb-4">
+            Solution Table (Pre-emptive SJF Scheduling)
+          </h2>
 
-    <div className="overflow-x-auto">
-      <table className="border-collapse border border-gray-400 w-full text-xs sm:text-sm md:text-base min-w-[500px]">
-        <thead>
-          <tr className="bg-red-400 h-8 sm:h-10 text-[10px] sm:text-sm">
-            <th className="border border-black px-2 sm:px-4">Process</th>
-            <th className="border border-black px-2 sm:px-4">Arrival Time (AT) ms</th>
-            <th className="border border-black px-2 sm:px-4">Burst Time (BT) ms</th>
-            <th className="border border-black px-2 sm:px-4">Completion Time (CT) ms</th>
-            <th className="border border-black px-2 sm:px-4">Turn Around Time (CT-AT) ms</th>
-            <th className="border border-black px-2 sm:px-4">Waiting Time (TAT-BT) ms</th>
-          </tr>
-        </thead>
+          <div className="overflow-x-auto">
+            <table className="border-collapse border border-gray-400 w-full text-xs sm:text-sm md:text-base min-w-[500px]">
+              <thead>
+                <tr className="bg-red-400 h-8 sm:h-10 text-[10px] sm:text-sm">
+                  <th className="border border-black px-2 sm:px-4">Process</th>
+                  <th className="border border-black px-2 sm:px-4">Arrival Time (AT) ms</th>
+                  <th className="border border-black px-2 sm:px-4">Burst Time (BT) ms</th>
+                  <th className="border border-black px-2 sm:px-4">Completion Time (CT) ms</th>
+                  <th className="border border-black px-2 sm:px-4">Turn Around Time (CT-AT) ms</th>
+                  <th className="border border-black px-2 sm:px-4">Waiting Time (TAT-BT) ms</th>
+                </tr>
+              </thead>
 
-        <tbody>
-          {(() => {
-            let totalTAT = 0;
-            let totalWT = 0;
+              <tbody>
+                {(() => {
+                  let totalTAT = 0;
+                  let totalWT = 0;
 
-            const ganttEnds = ganttData.reduce((acc, g) => {
-              if (g.process !== "IDLE" && g.end) {
-                acc[g.process] = g.end;
-              }
-              return acc;
-            }, {});
+                  const ganttEnds = ganttData.reduce((acc, g) => {
+                    if (g.process !== "IDLE" && g.end) {
+                      acc[g.process] = g.end;
+                    }
+                    return acc;
+                  }, {});
 
-            const rows = processes
-              .sort((a, b) => a.id - b.id)
-              .map((p) => {
-                const CT = ganttEnds[`P${p.id}`] || 0;
-                const TAT = CT - p.at;
-                const WT = TAT - p.bt;
+                  const rows = processes
+                    .sort((a, b) => a.id - b.id)
+                    .map((p) => {
+                      const CT = ganttEnds[`P${p.id}`] || 0;
+                      const TAT = CT - p.at;
+                      const WT = TAT - p.bt;
 
-                totalTAT += TAT;
-                totalWT += WT;
+                      totalTAT += TAT;
+                      totalWT += WT;
 
-                return (
-                  <tr key={p.id} className="text-center">
-                    <td className="border px-1 sm:px-2 bg-cyan-200 border-black">P{p.id}</td>
-                    <td className="border px-1 sm:px-2 bg-cyan-200 border-black">{p.at} ms</td>
-                    <td className="border px-1 sm:px-2 bg-cyan-200 border-black">{p.bt} ms</td>
-                    <td className="border px-1 sm:px-2 bg-cyan-200 border-black">{CT} ms</td>
-                    <td className="border px-1 sm:px-2 bg-cyan-200 border-black">{TAT} ms</td>
-                    <td className="border px-1 sm:px-2 bg-cyan-200 border-black">{WT} ms</td>
-                  </tr>
-                );
-              });
+                      return (
+                        <tr key={p.id} className="text-center">
+                          <td className="border px-1 sm:px-2 bg-cyan-200 border-black">P{p.id}</td>
+                          <td className="border px-1 sm:px-2 bg-cyan-200 border-black">{p.at} ms</td>
+                          <td className="border px-1 sm:px-2 bg-cyan-200 border-black">{p.bt} ms</td>
+                          <td className="border px-1 sm:px-2 bg-cyan-200 border-black">{CT} ms</td>
+                          <td className="border px-1 sm:px-2 bg-cyan-200 border-black">{TAT} ms</td>
+                          <td className="border px-1 sm:px-2 bg-cyan-200 border-black">{WT} ms</td>
+                        </tr>
+                      );
+                    });
 
-            const avgTAT = processes.length > 0 ? (totalTAT / processes.length).toFixed(2) : 0;
-            const avgWT = processes.length > 0 ? (totalWT / processes.length).toFixed(2) : 0;
+                  const avgTAT = processes.length > 0 ? (totalTAT / processes.length).toFixed(2) : 0;
+                  const avgWT = processes.length > 0 ? (totalWT / processes.length).toFixed(2) : 0;
 
-            rows.push(
-              <tr key="avg" className="bg-yellow-300 font-bold text-center">
-                <td className="border px-1 sm:px-2 border-black" colSpan={4}>Average</td>
-                <td className="border px-1 sm:px-2 border-black">{avgTAT} ms</td>
-                <td className="border px-1 sm:px-2 border-black">{avgWT} ms</td>
-              </tr>
-            );
+                  rows.push(
+                    <tr key="avg" className="bg-yellow-300 font-bold text-center">
+                      <td className="border px-1 sm:px-2 border-black" colSpan={4}>Average</td>
+                      <td className="border px-1 sm:px-2 border-black">{avgTAT} ms</td>
+                      <td className="border px-1 sm:px-2 border-black">{avgWT} ms</td>
+                    </tr>
+                  );
 
-            return rows;
-          })()}
-        </tbody>
-      </table>
-    </div>
-  </div>
-)}
+                  return rows;
+                })()}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
 
       {/* Average Info */}
       <div className="mt-6 sm:mt-8 md:mt-10 space-y-4">
         <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Turn Around Time:</h2>
+          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Turn Around Time:-</h2>
           <p className="text-white font-bold text-xs sm:text-sm md:text-base">
             Total Turn Around Time of All Processes / Number Of Processes
           </p>
         </div>
         <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Waiting Time:</h2>
+          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Waiting Time:-</h2>
           <p className="text-white font-bold text-xs sm:text-sm md:text-base">
             Total Waiting Time of All Processes / Number Of Processes
           </p>

@@ -195,7 +195,7 @@ function RR() {
   return (
     <div className="p-4">
       <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-4 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
-        <button className="flex items-center font-semibold text-sm sm:text-base bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 transition" onClick={B_Home}>
+        <button className="flex items-center font-semibold text-sm sm:text-base bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 mt-2  rounded-lg hover:bg-blue-600 transition" onClick={B_Home}>
           <ArrowLeft className="mr-2" size={20} /> EXIT
         </button>
         <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
@@ -263,11 +263,12 @@ function RR() {
       </div>
 
 
-      <div className="mt-14 flex gap-2">
-        <button className="bg-purple-600 text-white px-3 py-1 rounded font-bold border-2 border-white">
+      <div className="mt-8 sm:mt-10 md:mt-14 flex gap-2">
+        <button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-1 rounded font-bold border-2 border-white transition-all  text-xs sm:text-sm md:text-base">
           User Input Table
         </button>
       </div>
+
 
       {processes.length > 0 ? (
         <table className="border-collapse border border-gray-400 w-full mt-2">
@@ -307,18 +308,18 @@ function RR() {
       <div className="mt-4 flex gap-2 justify-left">
         <button
           onClick={() => setShowGantt(!showGantt)}
-          className="bg-green-500 text-white px-3 py-2 rounded mt-10 font-bold"
+          className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-2 rounded mt-10 font-bold"
         >
           {showGantt ? "Hide Gantt Chart" : "Generate Gantt Chart"}
         </button>
       </div>
 
- {showGantt && ganttData.length >= 0 && (
-        <div className="mt-5 bg-red-400 h-auto py-8 border-2 p-4 rounded-md">
+      {showGantt && ganttData.length >= 0 && (
+        <div className="mt-2 bg-red-400 h-auto py-8 border-2 p-4 rounded-md">
           <h2 className="text-lg font-bold mb-4 text-center text-white">
             Gantt Chart
           </h2>
-          
+
           {/* Gantt Chart: Remains scrollable due to timeline nature, made the blocks responsive (w-24 on small, w-32 on medium+) */}
           <div className="overflow-x-auto pb-8">
             <div className="flex items-center gap-1 justify-center mt-6 min-w-max">
@@ -339,7 +340,7 @@ function RR() {
               ))}
             </div>
           </div>
-          
+
           <div className="mt-10">
             {ganttData.map((rahul, i) =>
               rahul.isIdle ? (
@@ -361,31 +362,31 @@ function RR() {
           {/* READY QUEUE DISPLAY AREA */}
           <div className="flex flex-col items-center mt-5 rounded-md p-3 bg-cyan-200">
 
-             <div className="border-2 border-black p-2 sm:p-3 rounded-md">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="text-black font-semibold text-sm sm:text-base md:text-lg">BASIC IDEA</h3>
-                            <Lightbulb className="text-yellow-500" size={20} />
-                          </div>
-                          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm">
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium">* EXECUTING PROCESSES</p>
-                              <ArrowRight size={16} />
-                              <span className="text-black font-semibold px-2 py-1 rounded bg-green-300 border-2 border-black whitespace-nowrap">PROCESS</span>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium">** READY PROCESSES</p>
-                              <ArrowRight size={16} />
-                              <span className="text-black font-semibold px-2 py-1 rounded bg-white border-2 border-black whitespace-nowrap">PROCESS</span>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium">*** IDLE PROCESSES</p>
-                              <ArrowRight size={16} />
-                              <span className="text-black font-semibold px-2 py-1 rounded bg-yellow-100 border-2 border-black whitespace-nowrap">PROCESS</span>
-                            </div>
-                          </div>
-                        </div>
+            <div className="border-2 border-black p-2 sm:p-3 rounded-md">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-black font-semibold text-sm sm:text-base md:text-lg">BASIC IDEA</h3>
+                <Lightbulb className="text-yellow-500" size={20} />
+              </div>
+              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm">
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">* EXECUTING PROCESSES</p>
+                  <ArrowRight size={16} />
+                  <span className="text-black font-semibold px-2 py-1 rounded bg-green-300 border-2 border-black whitespace-nowrap">PROCESS</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">** READY PROCESSES</p>
+                  <ArrowRight size={16} />
+                  <span className="text-black font-semibold px-2 py-1 rounded bg-white border-2 border-black whitespace-nowrap">PROCESS</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">*** IDLE PROCESSES</p>
+                  <ArrowRight size={16} />
+                  <span className="text-black font-semibold px-2 py-1 rounded bg-yellow-100 border-2 border-black whitespace-nowrap">PROCESS</span>
+                </div>
+              </div>
+            </div>
 
             <h2 className="text-lg font-bold text-center text-black mt-4">
               Ready Queue Timeline
@@ -394,7 +395,7 @@ function RR() {
 
             {/* Ready Queue Timeline: Must be scrollable, blocks are responsive */}
             <div className="flex items-start justify-center gap-1 w-full overflow-x-auto p-2">
-              <div className="grid grid-cols-4 md:flex items-start justify-start gap-1 min-w-max"> 
+              <div className="grid grid-cols-4 md:flex items-start justify-start gap-1 min-w-max">
                 {ganttData.map((p, idx) => {
                   // Map the queueBefore snapshot to JSX elements
                   const readyQueueProcesses = p.queueBefore.map((proc, index) => {
@@ -445,13 +446,13 @@ function RR() {
       <div className="mt-14 flex gap-2">
         <button
           onClick={Table}
-          className="bg-purple-600 text-white px-3 py-2 rounded font-bold"
+          className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-2 rounded font-bold"
         >
           Show Solution Table
         </button>
       </div>
-{showSolution && finalTable.length > 0 && (
-        <div className="mt-5 bg-red-400 p-3 rounded-md border-2 border-white">
+      {showSolution && finalTable.length > 0 && (
+        <div className="mt-2 bg-red-400 p-3 rounded-md border-2 border-white">
           <h2 className="text-lg font-bold mb-4 text-center text-black">
             Solution Table (Round Robin Scheduling)
           </h2>
@@ -518,7 +519,7 @@ function RR() {
         </div>
       )}
 
-       <div className="mt-6 sm:mt-8 md:mt-10 space-y-4">
+      <div className="mt-6 sm:mt-8 md:mt-10 space-y-4">
         <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
           <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Turn Around Time:</h2>
           <p className="text-white font-bold text-xs sm:text-sm md:text-base">
