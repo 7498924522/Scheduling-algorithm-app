@@ -21,18 +21,18 @@ function Home() {
 
   const navigate=useNavigate();
 // Mock navigation handlers
-  const PREEM = (e) => { e.preventDefault(); console.log("Navigate to Pre-emptive"); };
-  const NONPREEM = (e) => { e.preventDefault(); console.log("Navigate to Non Pre-emptive"); };
-  const AT = (e) => { e.preventDefault(); console.log("Navigate to AT"); };
-  const BT = (e) => { e.preventDefault(); console.log("Navigate to BT"); };
-  const CT = (e) => { e.preventDefault(); console.log("Navigate to CT"); };
-  const TAT = (e) => { e.preventDefault(); console.log("Navigate to TAT"); };
-  const WT = (e) => { e.preventDefault(); console.log("Navigate to WT"); };
+  const PREEM = (e) => { e.preventDefault(); navigate("/") };
+  const NONPREEM = (e) => { e.preventDefault(); navigate("/Non_Pre_emptive") };
+  const AT = (e) => { e.preventDefault(); navigate("/at") };
+  const BT = (e) => { e.preventDefault(); navigate("/bt") };
+  const CT = (e) => { e.preventDefault(); navigate("/ct") };
+  const TAT = (e) => { e.preventDefault(); navigate("/tat") };
+  const WT = (e) => { e.preventDefault(); navigate("/Wt") };
   const Fcfs = (e) => { e.preventDefault(); navigate("/fcfs") };
   const Sjf = (e) => { e.preventDefault(); navigate("/sjf") };
   const RRR = (e) => { e.preventDefault(); navigate("/rr") };
-  const About_us = (e) => { e.preventDefault(); console.log("Navigate to About Us"); setMobileMenuOpen(false); };
-  const contact_us = (e) => { e.preventDefault(); console.log("Navigate to Contact Us"); setMobileMenuOpen(false); };
+  const About_us = (e) => { e.preventDefault(); navigate("/about_us" ) ;  setMobileMenuOpen(false); };
+  const contact_us = (e) => { e.preventDefault();navigate("/contact_us" ); setMobileMenuOpen(false); };
   const Priority = (e) => { e.preventDefault();  navigate("/priority_scheduling") };
   const BankerAlgo = (e) => { e.preventDefault(); console.log("Navigate to Banker"); };
   const OUT = (e) => { e.preventDefault(); navigate(-1) };
