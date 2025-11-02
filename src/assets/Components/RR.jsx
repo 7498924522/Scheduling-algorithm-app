@@ -1,0 +1,539 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { RiArrowLeftDoubleFill } from "react-icons/ri";
+import { FaLessThan, FaGreaterThan } from "react-icons/fa";
+import { GiStopwatch } from "react-icons/gi";
+import { FaHandPointRight } from "react-icons/fa";
+import { FcIdea } from "react-icons/fc";
+import { ArrowLeft, ArrowRight, Lightbulb } from "lucide-react";
+
+
+
+function RR() {
+  const [processes, setProcesses] = useState([]);
+  const [at, setAt] = useState("");
+  const [bt, setBt] = useState("");
+  const [showGantt, setShowGantt] = useState(false);
+  // Default quantum to 2ms to match the image logic, but keep it variable
+  const [quantum, setQuantum] = useState(1);
+  const [showSolution, setShowSolution] = useState(false);
+
+  const navigate = useNavigate();
+
+  const Table = () => {
+    setShowSolution(!showSolution);
+  };
+
+  // Here i have set the validation for quantum time and set limit for QT,
+  const Decrease = (e) => {
+    e.preventDefault();
+    quantum > 1
+      ? setQuantum(quantum - 1)
+      : alert("Do not try zero or negative");
+  };
+
+  const Increase = (e) => {
+    e.preventDefault();
+    quantum >= 7 ? alert("Limit between 1-7") : setQuantum(quantum + 1);
+  };
+
+  const B_Home = (e) => {
+    e.preventDefault();
+    navigate(-1);
+  };
+
+  const addProcess = () => {
+    if (at === "" || bt === "") {
+      alert("Please enter both AT and BT");
+      return;
+    } else if (at < 0 || bt < 0) {
+      alert("Do not enter negative values");
+      return;
+    } else if (at > 15 || bt > 15) {
+      alert("Please enter values between 0-15");
+      return;
+    }
+
+    const newProcess = {
+      id: processes.length + 1,
+      at: parseInt(at),
+      bt: parseInt(bt),
+    };
+
+    setProcesses([...processes, newProcess]);
+    setAt("");
+    setBt("");
+  };
+
+  // Round Robin with Idle Time Support and Ready Queue Tracking
+  const computeGanttData = () => {
+    const hasBeenQueued = new Set();
+    const queue = [];
+    const ganttChart = [];
+
+    const processesCopy = processes.map((p) => ({
+      id: p.id,
+      at: p.at,
+      bt: p.bt,
+      remaining: p.bt,
+      completionTime: null,
+    }));
+
+    let currentTime = 0;
+    let completed = 0;
+
+    processesCopy.sort((a, b) => a.at - b.at);
+
+    // Helper function to push newly arrived processes to the queue
+    const addNewlyArrivedProcesses = (currentT) => {
+      processesCopy.forEach((p) => {
+        if (p.at <= currentT && !hasBeenQueued.has(p.id)) {
+          queue.push(p);
+          hasBeenQueued.add(p.id);
+        }
+      });
+    };
+
+    addNewlyArrivedProcesses(currentTime);
+
+    while (completed < processesCopy.length) {
+
+      // Check for Idle Time
+      if (queue.length === 0) {
+
+        const nextProcess = processesCopy.find((p) => p.remaining > 0 && !hasBeenQueued.has(p.id) || p.at > currentTime);
+
+        if (!nextProcess) break;
+
+        const nextArrivalTime = processesCopy
+          .filter(p => p.at > currentTime || (p.remaining > 0 && !hasBeenQueued.has(p.id)))
+          .map(p => p.at)
+          .sort((a, b) => a - b)[0];
+
+        if (nextArrivalTime > currentTime) {
+          const idleStart = currentTime;
+          currentTime = nextArrivalTime;
+
+          ganttChart.push({
+            id: `idle-${idleStart}`,
+            start: idleStart,
+            end: currentTime,
+            isIdle: true,
+            queueBefore: [],
+            executedProcess: 'IDLE',
+            extraReadyQueue: [],
+          });
+        }
+
+        addNewlyArrivedProcesses(currentTime);
+        continue;
+      }
+
+      // Execute the next process in the queue
+      const currentProcess = queue.shift();
+      const execTime = Math.min(quantum, currentProcess.remaining);
+      const start = currentTime;
+      const end = currentTime + execTime;
+
+      // Capture the state of the queue *before* execution (including the one being executed)
+      const queueBeforeSnapshot = [
+        { id: currentProcess.id, remaining: currentProcess.remaining },
+        ...queue.map(p => ({ id: p.id, remaining: p.remaining }))
+      ];
+
+      currentProcess.remaining -= execTime;
+      currentTime = end;
+
+      // 1. Check for new arrivals during the execution window
+      addNewlyArrivedProcesses(currentTime);
+
+      // 2. Add the current process back to the queue if it's not finished
+      if (currentProcess.remaining > 0) {
+        queue.push(currentProcess);
+      } else {
+        completed++;
+        currentProcess.completionTime = currentTime;
+      }
+
+      ganttChart.push({
+        id: currentProcess.id,
+        start,
+        end,
+        isIdle: false,
+        queueBefore: queueBeforeSnapshot, // Contains {id, remaining} for all processes in queue
+        executedProcess: `P${currentProcess.id}`,
+        extraReadyQueue: [],
+      });
+    }
+
+    return ganttChart;
+  };
+
+  const ganttData = computeGanttData();
+
+  // Logic to calculate final completion times for the solution table
+  const finalTable = processes.map((proc) => {
+    const completionEntry = ganttData.filter(g => g.id === proc.id).pop();
+    const ct = completionEntry ? completionEntry.end : null;
+
+    return {
+      ...proc,
+      end: ct,
+    };
+  });
+
+  // Calculations for average TAT and WT
+  const TotalTat = finalTable.reduce((pre, q) => pre + (q.end !== null ? q.end - q.at : 0), 0);
+  const AvgTat = processes.length > 0 ? (TotalTat / processes.length).toFixed(2) : 0;
+
+  const totalWt = finalTable.reduce(
+    (previous, p) => previous + (p.end !== null ? p.end - p.at - p.bt : 0),
+    0
+  );
+  const AvgWt = processes.length > 0 ? (totalWt / processes.length).toFixed(2) : 0;
+
+  return (
+    <div className="p-4">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-4 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
+        <button className="flex items-center font-semibold text-sm sm:text-base bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 transition" onClick={B_Home}>
+          <ArrowLeft className="mr-2" size={20} /> EXIT
+        </button>
+        <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
+          Mode :-
+          <u className="text-red-500">Non-Pre-Emptive</u>
+        </h2>
+        <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
+          Criteria: <u className="text-red-500">Burst Time</u>
+        </h2>
+        <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
+          T-A-T: <u className="text-red-500">CT - AT</u>
+        </h2>
+        <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
+          W-T: <u className="text-red-500">TAT - BT</u>
+        </h2>
+      </div>
+
+      <div className="w-full h-14 bg-yellow-100 mt-10 flex items-center justify-center gap-6 rounded-2xl">
+        <h2 className="text-black text-xl font-semibold tracking-wide">
+          Quantum Time
+        </h2>
+        <button
+          onClick={Decrease}
+          className="bg-yellow-300 w-10 h-10 flex items-center justify-center mt-2 text-xl font-bold rounded-md shadow hover:bg-yellow-400 transition"
+        >
+          <FaLessThan />
+        </button>
+        <span className="text-center text-black">
+          <GiStopwatch className="text-black mx-4" />
+          {quantum}
+        </span>
+        <button
+          onClick={Increase}
+          className="bg-yellow-300 w-10 h-10 flex items-center justify-center mt-2 text-xl font-bold rounded-md shadow hover:bg-yellow-400 transition"
+        >
+          <FaGreaterThan />
+        </button>
+      </div>
+
+      <h2 className="text-2xl font-bold text-center mt-10 text-black">
+        CPU Process Manager (Round Robin)
+      </h2>
+
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center my-4 sm:my-6 px-2">
+        <input
+          type="number"
+          placeholder="Arrival Time"
+          value={at}
+          onChange={(e) => setAt(e.target.value)}
+          className="border-2 border-blue-100 p-2 rounded w-full sm:w-auto text-sm sm:text-base"
+        />
+        <input
+          type="number"
+          placeholder="Burst Time"
+          value={bt}
+          onChange={(e) => setBt(e.target.value)}
+          className="border-2 border-blue-100 p-2 rounded w-full sm:w-auto text-sm sm:text-base"
+        />
+        <button
+          onClick={addProcess}
+          className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto text-sm sm:text-base hover:bg-blue-600 transition"
+        >
+          Add Process
+        </button>
+      </div>
+
+
+      <div className="mt-14 flex gap-2">
+        <button className="bg-purple-600 text-white px-3 py-1 rounded font-bold border-2 border-white">
+          User Input Table
+        </button>
+      </div>
+
+      {processes.length > 0 ? (
+        <table className="border-collapse border border-gray-400 w-full mt-2">
+          <thead>
+            <tr className="bg-red-400 h-10">
+              <th className="border px-2 text-center border-black">Process</th>
+              <th className="border px-2 text-center border-black">
+                Arrival Time (ms)
+              </th>
+              <th className="border px-2 text-center border-black">
+                Burst Time (ms)
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {processes.map((p) => (
+              <tr key={p.id}>
+                <td className="border px-2 bg-cyan-200 text-center border-black">
+                  P{p.id}
+                </td>
+                <td className="border px-2 bg-cyan-200 text-center border-black">
+                  {p.at} ms
+                </td>
+                <td className="border px-2 bg-cyan-200 text-center border-black">
+                  {p.bt} ms
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="text-black text-2xl mt-3 text-center font-serif ml-16">
+          No processes added yet..
+        </p>
+      )}
+
+      <div className="mt-4 flex gap-2 justify-left">
+        <button
+          onClick={() => setShowGantt(!showGantt)}
+          className="bg-green-500 text-white px-3 py-2 rounded mt-10 font-bold"
+        >
+          {showGantt ? "Hide Gantt Chart" : "Generate Gantt Chart"}
+        </button>
+      </div>
+
+ {showGantt && ganttData.length >= 0 && (
+        <div className="mt-5 bg-red-400 h-auto py-8 border-2 p-4 rounded-md">
+          <h2 className="text-lg font-bold mb-4 text-center text-white">
+            Gantt Chart
+          </h2>
+          
+          {/* Gantt Chart: Remains scrollable due to timeline nature, made the blocks responsive (w-24 on small, w-32 on medium+) */}
+          <div className="overflow-x-auto pb-8">
+            <div className="flex items-center gap-1 justify-center mt-6 min-w-max">
+              {ganttData.map((p, idx) => (
+                <div
+                  key={idx}
+                  className={`${p.isIdle ? "bg-gray-500" : "bg-green-500"
+                    } text-white font-bold text-lg text-center rounded shadow relative h-8 w-12 md:w-20`}
+                >
+                  {p.isIdle ? "IDLE" : `P${p.id}`}
+                  <div className="absolute -bottom-6 left-0 text-lg text-white font-bold">
+                    {p.start}
+                  </div>
+                  <div className="absolute -bottom-6 right-0 text-lg text-white font-bold">
+                    {p.end}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="mt-10">
+            {ganttData.map((rahul, i) =>
+              rahul.isIdle ? (
+                <marquee
+                  key={rahul.id}
+                  behavior="alternate"
+                  className=" text-lg font-bold text-white"
+                >
+                  The CPU is not doing any work at{" "}
+                  <u className="text-black">{rahul.start}</u> ms to{" "}
+                  <u className="text-black">{rahul.end}</u> ms{" "}
+                  <u className="text-black"> --- IDLE ---</u>
+                </marquee>
+              ) : null
+            )}
+          </div>
+          <hr />
+
+          {/* READY QUEUE DISPLAY AREA */}
+          <div className="flex flex-col items-center mt-5 rounded-md p-3 bg-cyan-200">
+
+             <div className="border-2 border-black p-2 sm:p-3 rounded-md">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="text-black font-semibold text-sm sm:text-base md:text-lg">BASIC IDEA</h3>
+                            <Lightbulb className="text-yellow-500" size={20} />
+                          </div>
+                          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium">* EXECUTING PROCESSES</p>
+                              <ArrowRight size={16} />
+                              <span className="text-black font-semibold px-2 py-1 rounded bg-green-300 border-2 border-black whitespace-nowrap">PROCESS</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium">** READY PROCESSES</p>
+                              <ArrowRight size={16} />
+                              <span className="text-black font-semibold px-2 py-1 rounded bg-white border-2 border-black whitespace-nowrap">PROCESS</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium">*** IDLE PROCESSES</p>
+                              <ArrowRight size={16} />
+                              <span className="text-black font-semibold px-2 py-1 rounded bg-yellow-100 border-2 border-black whitespace-nowrap">PROCESS</span>
+                            </div>
+                          </div>
+                        </div>
+
+            <h2 className="text-lg font-bold text-center text-black mt-4">
+              Ready Queue Timeline
+            </h2>
+            <h2 className="text-lg font-bold mb-2 text-center text-black">{`Executes ${quantum} time of quantum period simultaneously till complete execution`}</h2>
+
+            {/* Ready Queue Timeline: Must be scrollable, blocks are responsive */}
+            <div className="flex items-start justify-center gap-1 w-full overflow-x-auto p-2">
+              <div className="grid grid-cols-4 md:flex items-start justify-start gap-1 min-w-max"> 
+                {ganttData.map((p, idx) => {
+                  // Map the queueBefore snapshot to JSX elements
+                  const readyQueueProcesses = p.queueBefore.map((proc, index) => {
+                    const isExecuted = index === 0 && !p.isIdle;
+
+                    return (
+                      <div
+                        key={`rq-${idx}-${proc.id}`}
+                        className={`text-black font-semibold mx-1 p-1 rounded w-full text-center ${isExecuted ? 'line-through text-black bg-green-300' : 'bg-white'}`}
+                      >
+                        P{proc.id}({proc.remaining})
+                      </div>
+                    );
+                  });
+
+                  // VITAL CHANGE: The container width is now 'w-24 md:w-32' to be narrower on mobile
+                  return (
+                    <div
+                      key={`rq-block-${idx}`}
+                      className="flex flex-col items-center w-20 md:w-24 border border-dotted border-black  p-1"
+                      style={{ minHeight: '100px' }} // Ensure consistent height
+                    >
+                      <span className="text-black text-sm font-bold mb-1">
+                        {p.isIdle ? 'IDLE' : `${p.executedProcess} EXECUTE`}
+                      </span>
+                      <div className="bg-gray-500 p-1 rounded min-h-8 flex flex-col items-center justify-center flex-grow w-18 md:w-20 gap-1">
+                        {p.isIdle ? (
+                          <span className="text-black font-semibold p-1 rounded w-full text-center bg-yellow-100">No Process</span>
+                        ) : (
+                          readyQueueProcesses.length > 0 ? (
+                            readyQueueProcesses
+                          ) : (
+                            <span className="text-black text-xs">Empty</span>
+                          )
+                        )}
+                      </div>
+
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      <div className="mt-14 flex gap-2">
+        <button
+          onClick={Table}
+          className="bg-purple-600 text-white px-3 py-2 rounded font-bold"
+        >
+          Show Solution Table
+        </button>
+      </div>
+{showSolution && finalTable.length > 0 && (
+        <div className="mt-5 bg-red-400 p-3 rounded-md border-2 border-white">
+          <h2 className="text-lg font-bold mb-4 text-center text-black">
+            Solution Table (Round Robin Scheduling)
+          </h2>
+          {/* VITAL CHANGE: Added a wrapper div with overflow-x-auto */}
+          <div className="overflow-x-auto">
+            <table className="border-collapse border border-gray-400 w-full">
+              <thead>
+                <tr className="bg-red-400 h-10">
+                  <th className="border px-4 border-black min-w-[80px]">Process</th>
+                  <th className="border px-4 border-black min-w-[150px]">
+                    Arrival Time (AT) ms
+                  </th>
+                  <th className="border px-4 border-black min-w-[150px]">Burst Time (BT) ms</th>
+                  <th className="border px-4 border-black min-w-[150px]">
+                    Completion Time (CT) ms
+                  </th>
+                  <th className="border px-4 border-black min-w-[150px]">
+                    Turn Around Time = (CT-AT) ms
+                  </th>
+                  <th className="border px-4 border-black min-w-[150px]">
+                    Waiting Time = (TAT-BT) ms
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {finalTable
+                  .sort((a, b) => a.id - b.id)
+                  .map((p) => {
+                    const tat = p.end - p.at;
+                    const wt = tat - p.bt;
+                    return (
+                      <tr key={p.id}>
+                        <td className="border px-2 text-center bg-cyan-200 border-black whitespace-nowrap">
+                          P{p.id}
+                        </td>
+                        <td className="border px-2 text-center bg-cyan-200 border-black whitespace-nowrap">
+                          {p.at} ms
+                        </td>
+                        <td className="border px-2 text-center bg-cyan-200 border-black whitespace-nowrap">
+                          {p.bt} ms
+                        </td>
+                        <td className="border px-2 text-center bg-cyan-200 border-black whitespace-nowrap">
+                          {p.end} ms
+                        </td>
+                        <td className="border px-2 text-center bg-cyan-200 border-black whitespace-nowrap">
+                          {tat} ms
+                        </td>
+                        <td className="border px-2 text-center bg-cyan-200 border-black whitespace-nowrap">
+                          {wt} ms
+                        </td>
+                      </tr>
+                    );
+                  })}
+                <tr className="bg-yellow-300 font-bold text-center">
+                  <td className="border px-2 border-black" colSpan="4">
+                    Average
+                  </td>
+                  <td className="border px-2 border-black whitespace-nowrap">{AvgTat} ms</td>
+                  <td className="border px-2 border-black whitespace-nowrap">{AvgWt} ms</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+       <div className="mt-6 sm:mt-8 md:mt-10 space-y-4">
+        <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
+          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Turn Around Time:</h2>
+          <p className="text-white font-bold text-xs sm:text-sm md:text-base">
+            Total Turn Around Time of All Processes / Number Of Processes
+          </p>
+        </div>
+        <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
+          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Waiting Time:</h2>
+          <p className="text-white font-bold text-xs sm:text-sm md:text-base">
+            Total Waiting Time of All Processes / Number Of Processes
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default RR; 

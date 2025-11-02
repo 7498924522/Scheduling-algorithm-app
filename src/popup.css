@@ -1,0 +1,31 @@
+.side-popup {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 350px;
+  height: 300px;
+ padding: 20px;
+  z-index: 999;
+  transition: transform 0.3s ease-in-out;
+  background: linear-gradient(to right, rgb(241, 71, 71), rgb(115, 115, 185));
+  margin-right: 450px;
+  margin-top: 110px;
+  border-radius: 10px;
+  
+}
+
+.popup-content p{
+  position: relative;
+  color: white;
+}
+
+.close-btn {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  font-size: 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  
+}

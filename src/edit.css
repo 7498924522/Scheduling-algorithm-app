@@ -1,0 +1,238 @@
+h3 {
+  margin-left: 50px;
+  font-family: bold;
+  margin-top: 0px;
+}
+
+/* .Navbar {
+   list-style: none;
+  display: left;
+  justify-content: center;
+  height: 150px;
+  
+  border-radius: 10px;
+  background-color: antiquewhite;
+   
+ 
+
+
+} */
+.Profile
+{
+  margin-left: auto;
+  
+}
+
+
+
+select {
+  border-radius: solid 5px red;
+  color: red;
+}
+.button {
+  justify-content: space-between;
+  margin-top: 15px;
+  padding: 2px;
+  border-radius: 9px;
+  margin-left:8px;
+  width: 149px;
+  height: 40px;
+  cursor: pointer;
+  /* background-color: hotpink; */
+}
+.button:hover {
+  background-color: rgb(116, 106, 116);
+  color: aqua;
+  box-shadow:inset 0px 0px 5px 3px white;
+}
+marquee {
+  margin-top: 5px;
+}
+#Info {
+  margin-top: 20px;
+  margin-left: 50%;
+  background-color: yellow;
+  border-radius: 5px;
+  width: 150px;
+}
+/* .Readable {
+  margin-top: 80px;
+  width: 900px;
+  height: 370px;
+  margin-left: 200px;
+ 
+  background-position: bottom;
+  background-size: cover;
+  
+
+  border-radius: 20px;
+} */
+
+h2 {
+  font-size: 30px;
+  color: white;
+  margin-left: 50px;
+  margin-top: 10px;
+}
+h1 {
+  margin-top: 50px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  font-size: 50px;
+  margin-left: 3px;
+  padding-top: 10px;
+}
+.Logout
+{
+  margin-left:100px;
+  margin-top:15px;
+  text-align: center;
+  width: 100px;
+
+}
+.Logout:hover
+{
+  background-color:gray;
+  
+}
+
+.learn-more {
+  background-color: hotpink;
+
+  color: white;
+  height: 50px;
+  width: 150px;
+  border-radius: 10px;
+  margin-left: 50px;
+}
+
+.learn-more:hover {
+  background-color: burlywood;
+  color: aqua;
+}
+.Readable p {
+  margin-left: 10px;
+  color: white;
+}
+
+.sbutton {
+  background-color: hotpink;
+  height: 50px;
+  width: 150px;
+  margin-left: 900px;
+  border-radius: 15px;
+  text-align: left;
+  border: 2px solid black;
+  cursor: pointer;
+}
+.sbutton:hover {
+  background-color: rgb(86, 84, 84);
+}
+.sbutton p {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-size: 15px;
+  margin-left: 30px;
+  color: black;
+}
+.slogo {
+  height: 40px;
+  width: 60px;
+  margin-left: 20px;
+}
+/* .Logout {
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 2px;
+  border-radius: 9px;
+  margin-left: 80px; 
+  
+
+  cursor: pointer;
+
+  background-color: rgb(151, 151, 231);
+}
+.Logout:hover {
+  background-color: rgb(116, 106, 116);
+  color: aqua;
+} */
+
+/* .FCFS {
+  background-color: hotpink;
+  height: 30px;
+  width: 150px;
+  margin-left: 600px;
+  margin-top: 300px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid aqua;
+  cursor: pointer;
+
+} */
+
+/* .Rahul
+{
+  text-align: center;
+} */
+
+.FCFS:hover {
+  color: white;
+  border: 3px solid aqua;
+  
+}
+
+.Avg {
+  display: flex;
+  border-radius: 10px;
+}
+.Avg h2 {
+  color: black;
+}
+.Formula {
+  padding: 10px;
+  border-radius: 25px;
+  box-shadow: 0px 3px 5px 0px red;
+}
+.average {
+  margin-left: 60px;
+}
+
+@keyframes slideRight {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(40px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-slideRight {
+  animation: slideRight 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-selected {
+  /* This remains for the process currently being executed */
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(252, 165, 165, 0.7); }
+  50% { transform: scale(1.05); box-shadow: 0 0 0 5px rgba(252, 165, 165, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(252, 165, 165, 0); }
+}
+
+@keyframes queue-slide-in {
+  /* Starts far to the right */
+  0% { transform: translateY(20px); opacity: 0; }
+  /* Slides to its final position */
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.animate-pulse-selected {
+  /* Pulse runs once for emphasis on selection */
+  animation: pulse-selected 0.5s ease-in-out;
+}
+
+.animate-slide-in {
+  /* Base class for the slide effect */
+  animation: queue-slide-in 6s ease-out;
+  animation-fill-mode: both; /* Ensures element stays in final state */
+}
