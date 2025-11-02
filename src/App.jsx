@@ -8,7 +8,8 @@ import "./popup.css";
 
 import "./edit.css";
 import "./Navbar.css";
-import Preemptive from "./assets/Components/PREEMPTIVE";
+import Preemptive from "./assets/Components/PREEMPTIVE.jsx";
+
 import Nonpreemptive from "./assets/Components/Nonpreemptive";
 import At from "./assets/Components/At";
 import Bt from "./assets/Components/Bt";

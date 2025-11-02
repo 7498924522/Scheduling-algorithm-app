@@ -8,7 +8,7 @@ function Preemptive() {
     const Back=(e)=>
   {
     e.preventDefault();
-    navigate(-1);
+    navigate("/home");
   };
   return (
     <div>

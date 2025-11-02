@@ -21,7 +21,7 @@ function Home() {
 
   const navigate=useNavigate();
 // Mock navigation handlers
-  const PREEM = (e) => { e.preventDefault(); navigate("/") };
+  const PREEM = (e) => { e.preventDefault(); navigate("/Pre_emptive") };
   const NONPREEM = (e) => { e.preventDefault(); navigate("/Non_Pre_emptive") };
   const AT = (e) => { e.preventDefault(); navigate("/at") };
   const BT = (e) => { e.preventDefault(); navigate("/bt") };
