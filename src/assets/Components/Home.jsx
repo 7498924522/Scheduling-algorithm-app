@@ -32,7 +32,9 @@ function Home() {
   const contact_us = (e) => { e.preventDefault(); navigate("/contact_us"); setMobileMenuOpen(false); };
   const Priority = (e) => { e.preventDefault(); navigate ("/priority_scheduling"); };
  
-  const OUT = (e) => { e.preventDefault(); navigate(-1); };
+  const OUT = (e) => { e.preventDefault();
+    alert("Log Out,,");
+     navigate(-1); };
 
   return (
     <div className="min-h-screen bg-gray-50">
