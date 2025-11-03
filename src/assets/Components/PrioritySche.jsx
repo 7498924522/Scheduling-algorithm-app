@@ -1,23 +1,78 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RiArrowLeftDoubleFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { FaRegQuestionCircle } from "react-icons/fa";
 import { FaArrowRightToBracket } from "react-icons/fa6";
 import { FaHandPointRight } from "react-icons/fa";
 import { FcIdea } from "react-icons/fc";
-import { ArrowLeft, ArrowRight, Lightbulb } from "lucide-react";
+import { ArrowLeft, ArrowRight, Lightbulb, Trash2 } from "lucide-react";
+import { RiDeleteBinLine } from "react-icons/ri";
 
+
+// Define sessionStorage keys
+const PROCESSES_KEY = "priority_processes";
+const PRIORITY_RULE_KEY = "priority_rule";
 
 function PrioritySche() {
-  const [processes, setProcesses] = useState([]);
+  // --- STATE INITIALIZATION WITH SESSION STORAGE ---
+  const [processes, setProcesses] = useState(() => {
+    const savedProcesses = sessionStorage.getItem(PROCESSES_KEY);
+    return savedProcesses ? JSON.parse(savedProcesses) : [];
+  });
+  const [priorityRule, setPriorityRule] = useState(() => {
+    const savedRule = sessionStorage.getItem(PRIORITY_RULE_KEY);
+    return savedRule || null; // 'high' or 'low' or null
+  });
+
   const [at, setAt] = useState("");
   const [bt, setBt] = useState("");
   const [priority, setPriority] = useState("");
   const [ganttData, setGanttData] = useState([]);
   const [showGantt, setShowGantt] = useState(true);
-  const [priorityRule, setPriorityRule] = useState(null); // 'high' or 'low'
   const [show, setShow] = useState(false);
   const [showTable, setShowTable] = useState(false);
+
+  // --- PERSISTENCE: useEffect to save data to sessionStorage ---
+  useEffect(() => {
+    // Save processes whenever the processes state changes
+    sessionStorage.setItem(PROCESSES_KEY, JSON.stringify(processes));
+    // Reset Gantt/Solution view when processes change
+    setGanttData([]);
+    setShowTable(false);
+    setShow(false);
+  }, [processes]);
+
+  useEffect(() => {
+    // Save priorityRule whenever the priorityRule state changes
+    if (priorityRule) {
+      sessionStorage.setItem(PRIORITY_RULE_KEY, priorityRule);
+    } else {
+      sessionStorage.removeItem(PRIORITY_RULE_KEY);
+    }
+    // Reset Gantt/Solution view when rule changes
+    setGanttData([]);
+    setShowTable(false);
+    setShow(false);
+  }, [priorityRule]);
+
+  // --- NEW FUNCTIONALITY: Clear Processes Button Logic ---
+  const clearProcesses = () => {
+    // Clear state
+     if (window.confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+  
+    setProcesses([]);
+    setGanttData([]);
+    setShowTable(false);
+    setShow(false);
+    setAt("");
+    setBt("");
+    setPriority("");
+    // Clear sessionStorage
+    sessionStorage.removeItem(PROCESSES_KEY);
+    // Note: I'm choosing NOT to clear the priorityRule on "Clear Processes" 
+    // as the user likely wants to keep the selected rule for new entries.
+  }
+};
 
   const Table = () => {
     setShow(!show);
@@ -39,20 +94,21 @@ function PrioritySche() {
   };
 
   const handleChange = (rule) => {
-    setPriorityRule(rule);
+    // Toggling behavior added for better UX
+    setPriorityRule(priorityRule === rule ? null : rule);
   };
 
   const addProcess = () => {
     if (at === "" || bt === "" || priority === "") {
       alert("Please enter AT, BT, and Priority");
       return;
-    } else if (at < 0 || bt < 0 || priority < 0) {
+    } else if (parseInt(at) < 0 || parseInt(bt) < 0 || parseInt(priority) < 0) {
       alert("Do not enter negative values");
       return;
-    } else if (at > 15 || bt > 15) {
+    } else if (parseInt(at) > 15 || parseInt(bt) > 15) {
       alert("Please enter AT and BT between 0-15");
       return;
-    } else if (priority > 100) {
+    } else if (parseInt(priority) > 100) {
       alert("Priority must be less than 100");
       return;
     } else if (priorityRule === null) {
@@ -73,11 +129,11 @@ function PrioritySche() {
     setPriority("");
   };
 
-  // === ✅ MAIN PRIORITY SCHEDULING WITH READY QUEUE TIMELINE ===
+  // === ✅ MAIN PRIORITY SCHEDULING WITH READY QUEUE TIMELINE (UNCHANGED LOGIC) ===
   const generateGanttChart = () => {
     if (processes.length === 0 || !priorityRule) return;
 
-    let processQueue = processes.map((p) => ({ ...p, isCompleted: false }));
+    let processQueue = processes.map((p) => ({ ...p, isCompleted: false, remainingBt: p.bt }));
     let currentTime = 0;
     let gantt = [];
     let completedMetrics = [];
@@ -123,14 +179,19 @@ function PrioritySche() {
         p.at < earliest.at ? p : earliest
       );
 
-      // ✅ Capture Ready Queue Snapshot
-      // This snapshot reflects the queue BEFORE the 'next' process is dispatched
+      // --- Ready Queue Sorting Logic for Display ---
       const queueBeforeSnapshot = [
-        { id: next.id },
-        ...available
-          .filter((p) => p.id !== next.id)
-          .map((p) => ({ id: p.id })),
+        ...available.filter(p => !p.isCompleted).sort((a, b) => {
+          // Sort by Priority first
+          const priorityDiff = priorityRule === "high"
+            ? b.priority - a.priority // High number = High Priority
+            : a.priority - b.priority; // Low number = High Priority
+          if (priorityDiff !== 0) return priorityDiff;
+          // Tie-breaker: Arrival Time (FIFO)
+          return a.at - b.at;
+        }).map((p) => ({ id: p.id })),
       ];
+
 
       const start = currentTime;
       const end = start + next.bt;
@@ -192,19 +253,20 @@ function PrioritySche() {
       ? (TotalWt / finalProcesses.length).toFixed(2)
       : 0;
 
-  // === UI PART ===
+  // === UI PART (Added Clear Button) ===
   return (
     <div className="p-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-4 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-1 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
         <button className="flex items-center font-semibold text-sm sm:text-base bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 mt-2  rounded-lg hover:bg-blue-600 transition" onClick={Back}>
           <ArrowLeft className="mr-2" size={20} /> EXIT
         </button>
+
         <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
           Mode :-
           <u>
             <select
-              className="rounded-md   text-white text-center bg-gray-300"
+              className="rounded-md   text-white text-center bg-gray-300"
               onChange={EntryPreemptPrio}
             >
               <option>Non-Pre-Emptive</option>
@@ -226,7 +288,7 @@ function PrioritySche() {
       </div>
 
       {/* Priority Rule Display */}
-      <div className="text-xl flex ml-2 md:ml-80 mb-4 w-96 md:w-1/2 text-black mt-24 rounded-lg border-4 border-yellow-400 p-2 justify-center">
+      <div className="text-xl flex ml-2 md:ml-80 mb-4 w-44 md:w-1/2 text-black mt-24 rounded-lg border-4 border-yellow-400 p-2 justify-center">
         {priorityRule === null ? (
           <>
             <FaRegQuestionCircle className="mr-2 mt-2" />
@@ -306,10 +368,13 @@ function PrioritySche() {
         </button>
       </div>
 
-      <div className="mt-8 sm:mt-10 md:mt-14 flex gap-2">
-        <button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-1 rounded font-bold border-2 border-white transition-all  text-xs sm:text-sm md:text-base">
+      <div className="mt-8 sm:mt-10 md:mt-14 flex gap-2 justify-between items-center">
+        <button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-1 rounded font-bold border-2 border-white transition-all  text-xs sm:text-sm md:text-base">
           User Input Table
         </button>
+        {/* Clear Button added here */}
+
+
       </div>
 
 
@@ -355,8 +420,11 @@ function PrioritySche() {
       <div className="flex justify-right gap-4 mt-10">
         <button
           onClick={generateGanttChart}
-          disabled={!priorityRule}
-          className="bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2 text-white text-center font-bold rounded"
+          disabled={!priorityRule || processes.length === 0}
+          className={`px-4 py-2 text-white text-center font-bold rounded bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:opacity-90 transition ${!priorityRule || processes.length === 0
+
+
+            }`}
         >
           Generate Gantt Chart
         </button>
@@ -495,12 +563,14 @@ function PrioritySche() {
 
 
       {/* Show Solution Table */}
+
       <button
         onClick={Table}
-        className="bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2 mt-10 text-white text-center font-bold rounded"
+        className="bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2 mt-10 text-white text-center font-bold rounded hover:opacity-90 transition"
       >
-        Show Solution Table
+        {show ? "Hide Solution Table" : "Show Solution Table"}
       </button>
+
 
       {/* Solution Table */}
       {show && finalProcesses.length > 0 && (
@@ -557,20 +627,69 @@ function PrioritySche() {
         </div>
       )}
 
+      <div className="text-center">
+        <button
+          className="mt-8 sm:mt-10 md:mt-8 flex items-center gap-2 font-bold text-sm sm:text-base bg-gradient-to-b from-red-400 to-red-600 text-white px-5 py-2 rounded-lg"
+          onClick={clearProcesses}
+        >
+          <RiDeleteBinLine className="w-5 h-5" />
+          CLEAR ALL
+        </button>
+      </div>
+
 
       {/* Average Info */}
-      <div className="mt-6 sm:mt-8 md:mt-10 space-y-4">
-        <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Turn Around Time:</h2>
-          <p className="text-white font-bold text-xs sm:text-sm md:text-base">
-            Total Turn Around Time of All Processes / Number Of Processes
-          </p>
+      <div className="mt-6 sm:mt-8 md:mt-10 space-y-6">
+        {/* Average Turn Around Time */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl">
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-white bg-opacity-20 p-3 rounded-lg backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h2 className="font-bold text-white text-lg sm:text-xl md:text-2xl">
+                Average Turn Around Time
+              </h2>
+            </div>
+
+            <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-xl p-4 sm:p-5 border border-white border-opacity-30">
+              <p className="text-white text-center font-semibold text-sm sm:text-base md:text-lg leading-relaxed">
+                <span className="block mb-2 text-yellow-200">Formula:-</span>
+                <span className="font-mono bg-white bg-opacity-20 px-4 py-2 rounded-lg inline-block">
+                  Σ Turn Around Time ÷ Number of Processes
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Waiting Time:</h2>
-          <p className="text-white font-bold text-xs sm:text-sm md:text-base">
-            Total Waiting Time of All Processes / Number Of Processes
-          </p>
+
+        {/* Average Waiting Time */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl">
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-white bg-opacity-20 p-3 rounded-lg backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h2 className="font-bold text-white text-lg sm:text-xl md:text-2xl">
+                Average Waiting Time
+              </h2>
+            </div>
+
+            <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-xl p-4 sm:p-5 border border-white border-opacity-30">
+              <p className="text-white text-center font-semibold text-sm sm:text-base md:text-lg leading-relaxed">
+                <span className="block mb-2 text-yellow-200">Formula:-</span>
+                <span className="font-mono bg-white bg-opacity-20 px-4 py-2 rounded-lg inline-block">
+                  Σ Waiting Time ÷ Number of Processes
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,11 +1,6 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { RiArrowLeftDoubleFill } from "react-icons/ri";
-import { FaLessThan, FaGreaterThan } from "react-icons/fa";
-import { GiStopwatch } from "react-icons/gi";
-import { FaHandPointRight } from "react-icons/fa";
-import { FcIdea } from "react-icons/fc";
-import { ArrowLeft, ArrowRight, Lightbulb } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { ArrowLeft, ArrowRight, Lightbulb, Trash2, ChevronLeft, ChevronRight, Clock } from "lucide-react";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 
 
@@ -14,17 +9,74 @@ function RR() {
   const [at, setAt] = useState("");
   const [bt, setBt] = useState("");
   const [showGantt, setShowGantt] = useState(false);
-  // Default quantum to 2ms to match the image logic, but keep it variable
   const [quantum, setQuantum] = useState(1);
   const [showSolution, setShowSolution] = useState(false);
 
-  const navigate = useNavigate();
+
+
+  // Load data from sessionStorage on component mount
+  useEffect(() => {
+    const savedProcesses = sessionStorage.getItem('rrProcesses');
+    const savedQuantum = sessionStorage.getItem('rrQuantum');
+    const savedShowGantt = sessionStorage.getItem('rrShowGantt');
+    const savedShowSolution = sessionStorage.getItem('rrShowSolution');
+
+    if (savedProcesses) {
+      setProcesses(JSON.parse(savedProcesses));
+    }
+    if (savedQuantum) {
+      setQuantum(JSON.parse(savedQuantum));
+    }
+    if (savedShowGantt) {
+      setShowGantt(JSON.parse(savedShowGantt));
+    }
+    if (savedShowSolution) {
+      setShowSolution(JSON.parse(savedShowSolution));
+    }
+  }, []);
+
+  // Save processes to sessionStorage whenever they change
+  useEffect(() => {
+    sessionStorage.setItem('rrProcesses', JSON.stringify(processes));
+  }, [processes]);
+
+  // Save quantum to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem('rrQuantum', JSON.stringify(quantum));
+  }, [quantum]);
+
+  // Save showGantt to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem('rrShowGantt', JSON.stringify(showGantt));
+  }, [showGantt]);
+
+  // Save showSolution to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem('rrShowSolution', JSON.stringify(showSolution));
+  }, [showSolution]);
 
   const Table = () => {
     setShowSolution(!showSolution);
   };
 
-  // Here i have set the validation for quantum time and set limit for QT,
+  // Clear all data
+  const clearAllData = () => {
+    if (window.confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+      setProcesses([]);
+      setAt("");
+      setBt("");
+      setQuantum(1);
+      setShowGantt(false);
+      setShowSolution(false);
+      
+      // Clear sessionStorage
+      sessionStorage.removeItem('rrProcesses');
+      sessionStorage.removeItem('rrQuantum');
+      sessionStorage.removeItem('rrShowGantt');
+      sessionStorage.removeItem('rrShowSolution');
+    }
+  };
+
   const Decrease = (e) => {
     e.preventDefault();
     quantum > 1
@@ -39,7 +91,9 @@ function RR() {
 
   const B_Home = (e) => {
     e.preventDefault();
-    navigate(-1);
+    if (window.confirm('Are you sure you want to exit?')) {
+      window.history.back();
+    }
   };
 
   const addProcess = () => {
@@ -65,7 +119,6 @@ function RR() {
     setBt("");
   };
 
-  // Round Robin with Idle Time Support and Ready Queue Tracking
   const computeGanttData = () => {
     const hasBeenQueued = new Set();
     const queue = [];
@@ -84,7 +137,6 @@ function RR() {
 
     processesCopy.sort((a, b) => a.at - b.at);
 
-    // Helper function to push newly arrived processes to the queue
     const addNewlyArrivedProcesses = (currentT) => {
       processesCopy.forEach((p) => {
         if (p.at <= currentT && !hasBeenQueued.has(p.id)) {
@@ -97,10 +149,7 @@ function RR() {
     addNewlyArrivedProcesses(currentTime);
 
     while (completed < processesCopy.length) {
-
-      // Check for Idle Time
       if (queue.length === 0) {
-
         const nextProcess = processesCopy.find((p) => p.remaining > 0 && !hasBeenQueued.has(p.id) || p.at > currentTime);
 
         if (!nextProcess) break;
@@ -129,13 +178,11 @@ function RR() {
         continue;
       }
 
-      // Execute the next process in the queue
       const currentProcess = queue.shift();
       const execTime = Math.min(quantum, currentProcess.remaining);
       const start = currentTime;
       const end = currentTime + execTime;
 
-      // Capture the state of the queue *before* execution (including the one being executed)
       const queueBeforeSnapshot = [
         { id: currentProcess.id, remaining: currentProcess.remaining },
         ...queue.map(p => ({ id: p.id, remaining: p.remaining }))
@@ -144,10 +191,8 @@ function RR() {
       currentProcess.remaining -= execTime;
       currentTime = end;
 
-      // 1. Check for new arrivals during the execution window
       addNewlyArrivedProcesses(currentTime);
 
-      // 2. Add the current process back to the queue if it's not finished
       if (currentProcess.remaining > 0) {
         queue.push(currentProcess);
       } else {
@@ -160,7 +205,7 @@ function RR() {
         start,
         end,
         isIdle: false,
-        queueBefore: queueBeforeSnapshot, // Contains {id, remaining} for all processes in queue
+        queueBefore: queueBeforeSnapshot,
         executedProcess: `P${currentProcess.id}`,
         extraReadyQueue: [],
       });
@@ -171,7 +216,6 @@ function RR() {
 
   const ganttData = computeGanttData();
 
-  // Logic to calculate final completion times for the solution table
   const finalTable = processes.map((proc) => {
     const completionEntry = ganttData.filter(g => g.id === proc.id).pop();
     const ct = completionEntry ? completionEntry.end : null;
@@ -182,7 +226,6 @@ function RR() {
     };
   });
 
-  // Calculations for average TAT and WT
   const TotalTat = finalTable.reduce((pre, q) => pre + (q.end !== null ? q.end - q.at : 0), 0);
   const AvgTat = processes.length > 0 ? (TotalTat / processes.length).toFixed(2) : 0;
 
@@ -194,10 +237,11 @@ function RR() {
 
   return (
     <div className="p-4">
-      <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-4 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
-        <button className="flex items-center font-semibold text-sm sm:text-base bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 mt-2  rounded-lg hover:bg-blue-600 transition" onClick={B_Home}>
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-1 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
+        <button className="flex items-center font-semibold text-sm sm:text-base bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 mt-2 rounded-lg hover:bg-blue-600 transition" onClick={B_Home}>
           <ArrowLeft className="mr-2" size={20} /> EXIT
         </button>
+        
         <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
           Mode :-
           <u className="text-red-500">Non-Pre-Emptive</u>
@@ -221,17 +265,17 @@ function RR() {
           onClick={Decrease}
           className="bg-yellow-300 w-10 h-10 flex items-center justify-center mt-2 text-xl font-bold rounded-md shadow hover:bg-yellow-400 transition"
         >
-          <FaLessThan />
+          <ChevronLeft />
         </button>
-        <span className="text-center text-black">
-          <GiStopwatch className="text-black mx-4" />
+        <span className="text-center text-black flex items-center gap-2">
+          <Clock className="text-black" />
           {quantum}
         </span>
         <button
           onClick={Increase}
           className="bg-yellow-300 w-10 h-10 flex items-center justify-center mt-2 text-xl font-bold rounded-md shadow hover:bg-yellow-400 transition"
         >
-          <FaGreaterThan />
+          <ChevronRight />
         </button>
       </div>
 
@@ -262,13 +306,11 @@ function RR() {
         </button>
       </div>
 
-
       <div className="mt-8 sm:mt-10 md:mt-14 flex gap-2">
-        <button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-1 rounded font-bold border-2 border-white transition-all  text-xs sm:text-sm md:text-base">
+        <button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-1 rounded font-bold border-2 border-white transition-all text-xs sm:text-sm md:text-base">
           User Input Table
         </button>
       </div>
-
 
       {processes.length > 0 ? (
         <table className="border-collapse border border-gray-400 w-full mt-2">
@@ -320,7 +362,6 @@ function RR() {
             Gantt Chart
           </h2>
 
-          {/* Gantt Chart: Remains scrollable due to timeline nature, made the blocks responsive (w-24 on small, w-32 on medium+) */}
           <div className="overflow-x-auto pb-8">
             <div className="flex items-center gap-1 justify-center mt-6 min-w-max">
               {ganttData.map((p, idx) => (
@@ -359,9 +400,7 @@ function RR() {
           </div>
           <hr />
 
-          {/* READY QUEUE DISPLAY AREA */}
           <div className="flex flex-col items-center mt-5 rounded-md p-3 bg-cyan-200">
-
             <div className="border-2 border-black p-2 sm:p-3 rounded-md">
               <div className="flex items-center gap-2 mb-2">
                 <h3 className="text-black font-semibold text-sm sm:text-base md:text-lg">BASIC IDEA</h3>
@@ -393,11 +432,9 @@ function RR() {
             </h2>
             <h2 className="text-lg font-bold mb-2 text-center text-black">{`Executes ${quantum} time of quantum period simultaneously till complete execution`}</h2>
 
-            {/* Ready Queue Timeline: Must be scrollable, blocks are responsive */}
             <div className="flex items-start justify-center gap-1 w-full overflow-x-auto p-2">
               <div className="grid grid-cols-4 md:flex items-start justify-start gap-1 min-w-max">
                 {ganttData.map((p, idx) => {
-                  // Map the queueBefore snapshot to JSX elements
                   const readyQueueProcesses = p.queueBefore.map((proc, index) => {
                     const isExecuted = index === 0 && !p.isIdle;
 
@@ -411,12 +448,11 @@ function RR() {
                     );
                   });
 
-                  // VITAL CHANGE: The container width is now 'w-24 md:w-32' to be narrower on mobile
                   return (
                     <div
                       key={`rq-block-${idx}`}
-                      className="flex flex-col items-center w-20 md:w-24 border border-dotted border-black  p-1"
-                      style={{ minHeight: '100px' }} // Ensure consistent height
+                      className="flex flex-col items-center w-20 md:w-24 border border-dotted border-black p-1"
+                      style={{ minHeight: '100px' }}
                     >
                       <span className="text-black text-sm font-bold mb-1">
                         {p.isIdle ? 'IDLE' : `${p.executedProcess} EXECUTE`}
@@ -432,14 +468,12 @@ function RR() {
                           )
                         )}
                       </div>
-
                     </div>
                   );
                 })}
               </div>
             </div>
           </div>
-
         </div>
       )}
 
@@ -456,7 +490,6 @@ function RR() {
           <h2 className="text-lg font-bold mb-4 text-center text-black">
             Solution Table (Round Robin Scheduling)
           </h2>
-          {/* VITAL CHANGE: Added a wrapper div with overflow-x-auto */}
           <div className="overflow-x-auto">
             <table className="border-collapse border border-gray-400 w-full">
               <thead>
@@ -519,22 +552,68 @@ function RR() {
         </div>
       )}
 
-      <div className="mt-6 sm:mt-8 md:mt-10 space-y-4">
-        <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Turn Around Time:</h2>
-          <p className="text-white font-bold text-xs sm:text-sm md:text-base">
-            Total Turn Around Time of All Processes / Number Of Processes
-          </p>
+      <div className="text-center">
+              <button
+                className="mt-8 sm:mt-10 md:mt-8 flex items-center gap-2 font-bold text-sm sm:text-base bg-gradient-to-b from-red-400 to-red-600 text-white px-5 py-2 rounded-lg"
+                onClick={clearAllData}
+              >
+                <RiDeleteBinLine className="w-5 h-5" />
+                CLEAR ALL
+              </button>
+            </div>
+      
+
+      <div className="mt-6 sm:mt-8 md:mt-10 space-y-6">
+        <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl">
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-white bg-opacity-20 p-3 rounded-lg backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h2 className="font-bold text-white text-lg sm:text-xl md:text-2xl">
+                Average Turn Around Time
+              </h2>
+            </div>
+            
+            <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-xl p-4 sm:p-5 border border-white border-opacity-30">
+              <p className="text-white text-center font-semibold text-sm sm:text-base md:text-lg leading-relaxed">
+                <span className="block mb-2 text-yellow-200">Formula:-</span>
+                <span className="font-mono bg-white bg-opacity-20 px-4 py-2 rounded-lg inline-block">
+                  Σ Turn Around Time ÷ Number of Processes
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Waiting Time:</h2>
-          <p className="text-white font-bold text-xs sm:text-sm md:text-base">
-            Total Waiting Time of All Processes / Number Of Processes
-          </p>
+
+        <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl">
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-white bg-opacity-20 p-3 rounded-lg backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h2 className="font-bold text-white text-lg sm:text-xl md:text-2xl">
+                Average Waiting Time
+              </h2>
+            </div>
+            
+            <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-xl p-4 sm:p-5 border border-white border-opacity-30">
+              <p className="text-white text-center font-semibold text-sm sm:text-base md:text-lg leading-relaxed">
+                <span className="block mb-2 text-yellow-200">Formula:-</span>
+                <span className="font-mono bg-white bg-opacity-20 px-4 py-2 rounded-lg inline-block">
+                  Σ Waiting Time ÷ Number of Processes
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default RR; 
+export default RR;

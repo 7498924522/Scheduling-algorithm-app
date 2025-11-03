@@ -31,7 +31,7 @@ function LogIn() {
       // Simulate loading
       setTimeout(() => {
         if (username === "rahulrrr" && password === "123456") {
-          alert(`Dear Organiser you login successfully`);
+          alert(`Login successfully`);
           navigate("/home");
         } else {
           setMessage("❌ Invalid Username or Password!");

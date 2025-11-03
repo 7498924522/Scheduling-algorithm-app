@@ -1,21 +1,77 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowLeft, ArrowRight, Lightbulb } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 function FCFS() {
-  const [processes, setProcesses] = useState([]);
-  const [at, setAt] = useState("");
-  const [bt, setBt] = useState("");
-  const [showGantt, setShowGantt] = useState(false);
-  const [showSolution, setShowSolution] = useState(false);
+  // Load from session storage on mount
+  const [processes, setProcesses] = useState(() => {
+    const saved = sessionStorage.getItem('fcfs-processes');
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  const navigate=useNavigate();
+  const [at, setAt] = useState(() => {
+    return sessionStorage.getItem('fcfs-at') || "";
+  });
+
+  const [bt, setBt] = useState(() => {
+    return sessionStorage.getItem('fcfs-bt') || "";
+  });
+
+  const [showGantt, setShowGantt] = useState(() => {
+    return sessionStorage.getItem('fcfs-showGantt') === 'true';
+  });
+
+  const [showSolution, setShowSolution] = useState(() => {
+    return sessionStorage.getItem('fcfs-showSolution') === 'true';
+  });
+
+  const navigate = useNavigate();
+
+  // Save to session storage whenever state changes
+  useEffect(() => {
+    sessionStorage.setItem('fcfs-processes', JSON.stringify(processes));
+  }, [processes]);
+
+  useEffect(() => {
+    sessionStorage.setItem('fcfs-at', at);
+  }, [at]);
+
+  useEffect(() => {
+    sessionStorage.setItem('fcfs-bt', bt);
+  }, [bt]);
+
+  useEffect(() => {
+    sessionStorage.setItem('fcfs-showGantt', showGantt);
+  }, [showGantt]);
+
+  useEffect(() => {
+    sessionStorage.setItem('fcfs-showSolution', showSolution);
+  }, [showSolution]);
 
   const Back = (e) => {
     e.preventDefault();
     navigate(-1);
-    
   };
+
+  const clearAll = () => {
+    // Clear all state
+     if (window.confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+  
+    setProcesses([]);
+    setAt("");
+    setBt("");
+    setShowGantt(false);
+    setShowSolution(false);
+
+    // Clear session storage
+    sessionStorage.removeItem('fcfs-processes');
+    sessionStorage.removeItem('fcfs-at');
+    sessionStorage.removeItem('fcfs-bt');
+    sessionStorage.removeItem('fcfs-showGantt');
+    sessionStorage.removeItem('fcfs-showSolution');
+  }
+};
 
   // Validation remains the same
   const addProcess = () => {
@@ -29,7 +85,6 @@ function FCFS() {
       alert("Please enter values between 0-15");
       return;
     }
-
 
     const newProcess = {
       id: processes.length + 1,
@@ -144,10 +199,11 @@ function FCFS() {
   return (
     <div className="p-2 sm:p-4 md:p-6 max-w-7xl mx-auto">
       {/* Header - Responsive */}
-      <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-4 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-1 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
         <button className="flex items-center font-semibold text-sm sm:text-base bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 mt-2  rounded-lg hover:bg-blue-600 transition" onClick={Back}>
           <ArrowLeft className="mr-2" size={20} /> EXIT
         </button>
+
         <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
           Mode: <u className="text-red-500">Non-Pre-Emptive</u>
         </h2>
@@ -190,11 +246,13 @@ function FCFS() {
         </button>
       </div>
 
-      <div className="mt-8 sm:mt-10 md:mt-14 flex gap-2">
+
+      <div className="mt-2 sm:mt-10 md:mt-2 flex gap-2">
         <button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-3 py-1 rounded font-bold border-2 border-white transition-all  text-xs sm:text-sm md:text-base">
           User Input Table
         </button>
       </div>
+
 
       {/* Process List Table - Responsive */}
       {processes.length > 0 ? (
@@ -277,7 +335,7 @@ function FCFS() {
           <div className="mt-10 sm:mt-14">
             {ganttData.map((p, i) =>
               p.isIdle ? (
-                 <marquee
+                <marquee
                   key={p.id}
                   behavior="alternate"
                   className=" text-lg font-bold text-white"
@@ -306,13 +364,13 @@ function FCFS() {
                   <ArrowRight size={16} />
                   <span className="text-black font-semibold px-2 py-1 rounded bg-green-300 border-2 border-black whitespace-nowrap">PROCESS</span>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <p className="font-medium">** READY PROCESSES</p>
                   <ArrowRight size={16} />
                   <span className="text-black font-semibold px-2 py-1 rounded bg-white border-2 border-black whitespace-nowrap">PROCESS</span>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <p className="font-medium">*** IDLE PROCESSES</p>
                   <ArrowRight size={16} />
@@ -449,19 +507,71 @@ function FCFS() {
         </div>
       )}
 
+
+      <div className="text-center">
+
+        <button
+          className="mt-8 sm:mt-10 md:mt-8 flex items-center gap-2 font-bold text-sm sm:text-base bg-gradient-to-b from-red-400 to-red-600 text-white px-5 py-2 rounded-lg 
+          "
+          onClick={clearAll}
+        >
+          <RiDeleteBinLine className="w-5 h-5" />
+          CLEAR ALL
+        </button>
+      </div>
+
       {/* Information Boxes - Responsive */}
-      <div className="mt-6 sm:mt-8 md:mt-10 space-y-4">
-        <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Turn Around Time:-</h2>
-          <p className="text-white font-bold text-xs sm:text-sm md:text-base">
-            Total Turn Around Time of All Processes / Number Of Processes
-          </p>
+      <div className="mt-6 sm:mt-8 md:mt-10 space-y-6">
+        {/* Average Turn Around Time */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl">
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-white bg-opacity-20 p-3 rounded-lg backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h2 className="font-bold text-white text-lg sm:text-xl md:text-2xl">
+                Average Turn Around Time
+              </h2>
+            </div>
+
+            <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-xl p-4 sm:p-5 border border-white border-opacity-30">
+              <p className="text-white text-center font-semibold text-sm sm:text-base md:text-lg leading-relaxed">
+                <span className="block mb-2 text-yellow-200">Formula:-</span>
+                <span className="font-mono bg-white bg-opacity-20 px-4 py-2 rounded-lg inline-block">
+                  Σ Turn Around Time ÷ Number of Processes
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Waiting Time:-</h2>
-          <p className="text-white font-bold text-xs sm:text-sm md:text-base">
-            Total Waiting Time of All Processes / Number Of Processes
-          </p>
+
+        {/* Average Waiting Time */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl">
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-white bg-opacity-20 p-3 rounded-lg backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h2 className="font-bold text-white text-lg sm:text-xl md:text-2xl">
+                Average Waiting Time
+              </h2>
+            </div>
+
+            <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-xl p-4 sm:p-5 border border-white border-opacity-30">
+              <p className="text-white text-center font-semibold text-sm sm:text-base md:text-lg leading-relaxed">
+                <span className="block mb-2 text-yellow-200">Formula:-</span>
+                <span className="font-mono bg-white bg-opacity-20 px-4 py-2 rounded-lg inline-block">
+                  Σ Waiting Time ÷ Number of Processes
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

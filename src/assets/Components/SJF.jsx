@@ -1,23 +1,82 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiArrowLeftDoubleFill } from "react-icons/ri";
 import { FaHandPointRight } from "react-icons/fa";
 import { FcIdea } from "react-icons/fc";
-import { ArrowLeft, ArrowRight, Lightbulb } from "lucide-react";
+import { ArrowLeft, ArrowRight, Lightbulb, Trash2 } from "lucide-react";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 
 function SJF() {
-  const [processes, setProcesses] = useState([]);
-  const [at, setAt] = useState("");
-  const [bt, setBt] = useState("");
-  const [showGantt, setShowGantt] = useState(false);
-  const [showSolution, setShowSolution] = useState(false);
+  // Load from session storage on mount
+  const [processes, setProcesses] = useState(() => {
+    const saved = sessionStorage.getItem('sjf-processes');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [at, setAt] = useState(() => {
+    return sessionStorage.getItem('sjf-at') || "";
+  });
+
+  const [bt, setBt] = useState(() => {
+    return sessionStorage.getItem('sjf-bt') || "";
+  });
+
+  const [showGantt, setShowGantt] = useState(() => {
+    return sessionStorage.getItem('sjf-showGantt') === 'true';
+  });
+
+  const [showSolution, setShowSolution] = useState(() => {
+    return sessionStorage.getItem('sjf-showSolution') === 'true';
+  });
 
   const navigate = useNavigate();
+
+  // Save to session storage whenever state changes
+  useEffect(() => {
+    sessionStorage.setItem('sjf-processes', JSON.stringify(processes));
+  }, [processes]);
+
+  useEffect(() => {
+    sessionStorage.setItem('sjf-at', at);
+  }, [at]);
+
+  useEffect(() => {
+    sessionStorage.setItem('sjf-bt', bt);
+  }, [bt]);
+
+  useEffect(() => {
+    sessionStorage.setItem('sjf-showGantt', showGantt);
+  }, [showGantt]);
+
+  useEffect(() => {
+    sessionStorage.setItem('sjf-showSolution', showSolution);
+  }, [showSolution]);
+
   const Back = (e) => {
     e.preventDefault();
     navigate(-1);
   };
+
+  const clearAll = () => {
+    // Clear all state
+     if (window.confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+  
+    setProcesses([]);
+    setAt("");
+    setBt("");
+    setShowGantt(false);
+    setShowSolution(false);
+
+    // Clear session storage
+    sessionStorage.removeItem('sjf-processes');
+    sessionStorage.removeItem('sjf-at');
+    sessionStorage.removeItem('sjf-bt');
+    sessionStorage.removeItem('sjf-showGantt');
+    sessionStorage.removeItem('sjf-showSolution');
+  }
+};
+
   const EntryPsjf = (e) => {
     e.preventDefault();
     if (e.target.value === "preemptive") {
@@ -142,15 +201,18 @@ function SJF() {
   return (
     <div className="p-2 sm:p-4 md:p-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-4 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-1 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
         <button className="flex items-center font-semibold text-sm sm:text-base bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 mt-2  rounded-lg hover:bg-blue-600 transition" onClick={Back}>
           <ArrowLeft className="mr-2" size={20} /> EXIT
         </button>
+
+
+
         <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-black">
           Mode :-
           <u>
             <select
-              className="rounded-md   text-white text-center bg-gray-300"
+              className="rounded-md   text-red-500 text-center bg-gray-300"
               onChange={EntryPsjf}
             >
               <option>Non-Pre-Emptive</option>
@@ -447,19 +509,69 @@ function SJF() {
         </div>
       )}
 
-      {/* Basic Formula about the Average Information */}
-      <div className="mt-6 sm:mt-8 md:mt-10 space-y-4">
-        <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Turn Around Time:-</h2>
-          <p className="text-white font-bold text-xs sm:text-sm md:text-base">
-            Total Turn Around Time of All Processes / Number Of Processes
-          </p>
+      <div className="text-center">
+
+        <button
+          className="mt-8 sm:mt-10 md:mt-8 flex items-center gap-2 font-bold text-sm sm:text-base bg-gradient-to-b from-red-400 to-red-600 text-white px-5 py-2 rounded-lg 
+                "
+          onClick={clearAll}
+        >
+          <RiDeleteBinLine className="w-5 h-5" />
+          CLEAR ALL
+        </button>
+      </div>
+
+      <div className="mt-6 sm:mt-8 md:mt-10 space-y-6">
+        {/* Average Turn Around Time */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl">
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-white bg-opacity-20 p-3 rounded-lg backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h2 className="font-bold text-white text-lg sm:text-xl md:text-2xl">
+                Average Turn Around Time
+              </h2>
+            </div>
+
+            <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-xl p-4 sm:p-5 border border-white border-opacity-30">
+              <p className="text-white text-center font-semibold text-sm sm:text-base md:text-lg leading-relaxed">
+                <span className="block mb-2 text-yellow-200">Formula:-</span>
+                <span className="font-mono bg-white bg-opacity-20 px-4 py-2 rounded-lg inline-block">
+                  Σ Turn Around Time ÷ Number of Processes
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="bg-red-300 p-3 sm:p-4 rounded-lg">
-          <h2 className="font-bold text-sm sm:text-base md:text-lg mb-2">Average Waiting Time:-</h2>
-          <p className="text-white font-bold text-xs sm:text-sm md:text-base">
-            Total Waiting Time of All Processes / Number Of Processes
-          </p>
+
+        {/* Average Waiting Time */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl">
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-white bg-opacity-20 p-3 rounded-lg backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h2 className="font-bold text-white text-lg sm:text-xl md:text-2xl">
+                Average Waiting Time
+              </h2>
+            </div>
+
+            <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-xl p-4 sm:p-5 border border-white border-opacity-30">
+              <p className="text-white text-center font-semibold text-sm sm:text-base md:text-lg leading-relaxed">
+                <span className="block mb-2 text-yellow-200">Formula:-</span>
+                <span className="font-mono bg-white bg-opacity-20 px-4 py-2 rounded-lg inline-block">
+                  Σ Waiting Time ÷ Number of Processes
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
