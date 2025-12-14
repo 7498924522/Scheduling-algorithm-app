@@ -73,7 +73,7 @@ function FCFS() {
   }
 };
 
-  // Validation remains the same
+  // Validation 
   const addProcess = () => {
     if (at === "" || bt === "") {
       alert("Please enter both AT and BT");
@@ -90,7 +90,7 @@ function FCFS() {
       id: processes.length + 1,
       at: parseInt(at),
       bt: parseInt(bt),
-      // Add original properties for easy reference
+      
       remaining: parseInt(bt),
     };
 
@@ -140,21 +140,20 @@ function FCFS() {
             // Ready Queue is empty during idle time
             queueBefore: [],
           });
-          // Re-check arrivals now that time has advanced
+          
           continue;
         } else {
           // No more processes to run or arrive
           break;
         }
       } else {
-        // C. Execute the next process from the Ready Queue (FCFS logic)
+        //  Execute the next process from the Ready Queue (FCFS logic)
 
         const p = readyQueue.shift(); // Get the process at the front
 
         const start = currentTime;
         const end = start + p.bt;
 
-        // Snapshot of the queue *before* the process is executed
         const queueSnapshot = [{ id: p.id }, ...readyQueue.map(q => ({ id: q.id }))];
 
         // Record the Gantt block
@@ -170,7 +169,7 @@ function FCFS() {
         currentTime = end;
         completedProcesses.push(p);
 
-        // D. Check for new arrivals again since time has advanced
+        //  Check for new arrivals again since time has advanced
         while (processIndex < processesCopy.length && processesCopy[processIndex].at <= currentTime) {
           readyQueue.push(processesCopy[processIndex]);
           processIndex++;
@@ -183,8 +182,6 @@ function FCFS() {
 
   const ganttData = computeGanttData();
 
-  // Recalculate Total and Avg TAT/WT using the final ganttData
-  // Ensure we only consider *actual* processes, not idle blocks
   const completedProcesses = ganttData.filter((p) => !p.isIdle);
 
   const TotalTat = completedProcesses.reduce((pre, q) => pre + (q.end - q.at), 0);
@@ -198,7 +195,7 @@ function FCFS() {
 
   return (
     <div className="p-2 sm:p-4 md:p-6 max-w-7xl mx-auto">
-      {/* Header - Responsive */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 md:gap-6 lg:gap-1 mb-6 bg-white p-3 sm:p-4 rounded-lg shadow">
         <button className="flex items-center font-semibold text-sm sm:text-base bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-3 py-1 mt-2  rounded-lg hover:bg-blue-600 transition" onClick={Back}>
           <ArrowLeft className="mr-2" size={20} /> EXIT
@@ -222,7 +219,7 @@ function FCFS() {
         CPU Process Manager (FCFS)
       </h2>
 
-      {/* Input Fields - Responsive */}
+      {/* Input Fields  */}
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center my-4 sm:my-6 px-2">
         <input
           type="number"
@@ -520,7 +517,7 @@ function FCFS() {
         </button>
       </div>
 
-      {/* Information Boxes - Responsive */}
+      {/* Information Boxes */}
       <div className="mt-6 sm:mt-8 md:mt-10 space-y-6">
         {/* Average Turn Around Time */}
         <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 p-6 sm:p-8 rounded-2xl shadow-xl hover:shadow-2xl">

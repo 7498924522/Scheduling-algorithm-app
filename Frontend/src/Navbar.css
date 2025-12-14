@@ -23,14 +23,26 @@ body {
 }
  
 .INFOR {
-  width: 700px;
-  height: 370px;
-  margin-left: 30px;
-  margin-top: 50px;
+  width: 90%;               
+  max-width: 700px;         
+  aspect-ratio: 700 / 370;  
+  margin: 50px auto 0 auto; 
   box-shadow: 0px 5px 20px 2px rgb(233, 81, 81);
   border-radius: 20px;
   background-color: khaki;
+  padding: 20px;            
+  box-sizing: border-box;  
 }
+
+/* Optional: Responsive adjustments for very small screens */
+@media (max-width: 480px) {
+  .INFOR {
+    width: 95%;
+    aspect-ratio: auto;
+    margin: 20px auto;
+  }
+}
+
 p {
   word-spacing: 10px;
   margin: 10px;

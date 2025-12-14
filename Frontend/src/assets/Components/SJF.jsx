@@ -112,18 +112,15 @@ function SJF() {
     setShowSolution(!showSolution);
   };
 
-  // ------------------------------------------------------------------
-  // UPDATED: computeGanttData to include Ready Queue tracking for SJF Non-Preemptive
-  // ------------------------------------------------------------------
   const computeGanttData = () => {
-    // Deep copy and sort by Arrival Time first to ensure correct queueing
+    
     let sortedProcesses = [...processes].sort((a, b) => a.at - b.at);
     let currentTime = 0;
     let gantt = [];
     let completedIDs = new Set();
     const n = sortedProcesses.length;
     let processIndex = 0;
-    let readyQueue = []; // Holds process objects that have arrived but haven't started
+    let readyQueue = []; 
 
     while (completedIDs.size < n) {
 
@@ -137,7 +134,7 @@ function SJF() {
         // CPU idle till next process arrives
         const nextUnstartedProcess = sortedProcesses.find(p => !completedIDs.has(p.id));
 
-        if (!nextUnstartedProcess) break; // All processes are accounted for
+        if (!nextUnstartedProcess) break;
 
         let nextArrivalTime = nextUnstartedProcess.at;
 
@@ -153,20 +150,16 @@ function SJF() {
         continue;
       }
 
-      // 2. SJF Selection (Sort Ready Queue by BT)
-      readyQueue.sort((a, b) => a.bt - b.bt);
+        readyQueue.sort((a, b) => a.bt - b.bt);
 
-      // 3. Select the shortest job
-      let nextProcess = readyQueue.shift();
+       let nextProcess = readyQueue.shift();
 
-      // 4. Capture the Ready Queue state *before* execution starts
-      // The queueBefore includes the process being executed, followed by the rest of the waiting queue.
-      const queueBeforeSnapshot = [
+        const queueBeforeSnapshot = [
         { id: nextProcess.id },
         ...readyQueue.map(p => ({ id: p.id }))
       ];
 
-      // 5. Execute (Non-Preemptive)
+      
       let start = currentTime;
       let end = start + nextProcess.bt;
 
@@ -175,7 +168,7 @@ function SJF() {
         start,
         end,
         isIdle: false,
-        queueBefore: queueBeforeSnapshot, // Attach snapshot to the Gantt block
+        queueBefore: queueBeforeSnapshot, 
       });
 
       currentTime = end;

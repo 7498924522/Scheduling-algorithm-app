@@ -8,7 +8,6 @@ import "./popup.css";
 
 import "./edit.css";
 import "./Navbar.css";
-//import Preemptive from "./assets/Components/PREEMPTIVE.jsx";
 
 import Nonpreemptive from "./assets/Components/Nonpreemptive";
 import At from "./assets/Components/At";
@@ -26,12 +25,16 @@ import AboutUs from "./assets/Components/AboutUs";
 import ContactUs from "./assets/Components/ContactUs";
 import PreemptivePriority from "./assets/Components/PreemptivePriority";
 import BankersAlgorithm from "./assets/Components/BankersAlgorithm";
+import MainPage from "./assets/Components/MainPage";
+import SignUp from "./assets/Components/SignUp";
 function App() {
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<LogIn />} />
+          <Route path="/" element={<MainPage />} />
+          <Route path="/login" element={<LogIn />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/home" element={<Home />} />
           <Route path="/about_us" element={<AboutUs />} />
           <Route path="/contact_us" element={<ContactUs />} />

@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { HomeIcon, Info, Mail, Github, Linkedin, ChevronDown, Pause, Plane, Clock, ArrowDown, ArrowRight, Menu, X } from "lucide-react";
+import React, { useState,useRef, use} from "react";
+import { HomeIcon, Info, Mail, Github, Linkedin,ChevronDown, Pause, Plane, Clock, ArrowDown, ArrowRight, Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
+import { FaPeopleGroup } from "react-icons/fa6";
+import { IoPaperPlane } from "react-icons/io5";
+import axios from "axios";
 const ProfileCard = () => (
   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-300 rounded-full flex text-black items-center justify-center text-xs sm:text-sm font-bold">
     R
@@ -10,10 +12,14 @@ const ProfileCard = () => (
 
 function Home() {
   const [showMore, setShowMore] = useState(false);
-  const [Bankers, setBankers] = useState(false);
+  const [feed, setFeed] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigate =useNavigate();
+  const bottomRef=useRef(null);
+  const scrollToBottom = () => {
+    bottomRef.current.focus({ behavior: "smooth" });
+  };
 
   const toggleLearnMore = () => {
     setShowMore(!showMore);
@@ -32,9 +38,28 @@ function Home() {
   const contact_us = (e) => { e.preventDefault(); navigate("/contact_us"); setMobileMenuOpen(false); };
   const Priority = (e) => { e.preventDefault(); navigate ("/priority_scheduling"); };
  
-  const OUT = (e) => { e.preventDefault();
-    alert("Log Out,,");
-     navigate(-1); };
+  const OUT = (e) => {
+    e.preventDefault();
+
+    // Clear login info
+    localStorage.removeItem("loggedInUser");
+
+    // Optional alert
+    alert("Logged out successfully!");
+
+    // Redirect to login page
+    navigate("/");
+  };
+
+     const handlesubmit = async () => {
+    try {
+      const res = await axios.post("http://localhost:8080/feedback/save", {feed});
+      alert("FeedBack Saved:", res.data);
+      setFeed("");
+    } catch (err) {
+      alert("Error:", err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -42,8 +67,8 @@ function Home() {
         <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
           <div className="lg:hidden">
             <div className="flex justify-between items-center">
-              <div className="text-base sm:text-xl font-bold text-white">
-                MyScheduler
+              <div className="text-base sm:text-xl font-bold text-white cursor-pointer">
+               <div onClick={scrollToBottom} className="flex md:gap-4 gap-2">FEEDBACK <FaPeopleGroup className="mt-1"/></div>
               </div>
 
               <div className="flex items-center gap-2 sm:gap-3">
@@ -106,7 +131,7 @@ function Home() {
           <div className="hidden lg:flex justify-between items-center text-white">
             <div className="flex flex-col items-start space-y-2">
               <div className="text-xl font-bold cursor-pointer hover:text-yellow-400 hover:underline">
-                MyScheduler
+                <div onClick={scrollToBottom} className="md:flex gap-4">FEEDBACK <FaPeopleGroup className="mt-1"/></div>
               </div>
               <button
                 onClick={toggleLearnMore}
@@ -383,9 +408,12 @@ function Home() {
             <div>
               <h3 className="text-xs sm:text-sm font-semibold text-white uppercase mb-2 sm:mb-4">Contribute</h3>
               <ul className="space-y-1.5 sm:space-y-3">
-                <li><a href="#" className="text-xs sm:text-sm hover:text-white">Report an Issue</a></li>
+               
                 <li><a href="#" className="text-xs sm:text-sm hover:text-white">Provide Feedback</a></li>
-                <li><a href="mailto:contact@example.com" className="text-xs sm:text-sm hover:text-white">Email Us</a></li>
+                   <div className="flex">
+                    <textarea ref={bottomRef} className="auto md:w-60 rounded-sm text-black" placeholder="Typing,,," value={feed} onChange={(e)=> setFeed(e.target.value)}>
+                    </textarea></div>
+                   <button onClick={handlesubmit} className="flex bg-white/30 p-1 gap-3 rounded-lg px-8 text-white">SUBMIT <IoPaperPlane className="mt-1"/></button>
               </ul>
             </div>
           </div>
