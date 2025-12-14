@@ -53,7 +53,7 @@ function Home() {
 
      const handlesubmit = async () => {
     try {
-      const res = await axios.post("http://localhost:8080/feedback/save", {feed});
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/feedback/save`, {feed});
       alert("FeedBack Saved:", res.data);
       setFeed("");
     } catch (err) {

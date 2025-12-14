@@ -5,7 +5,7 @@ import Backend.BB.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("*")
+@CrossOrigin("https://scheduling-algorithm-app-zw24.vercel.app/")
 @RestController
 @RequestMapping("/auth")
 public class UserController {
