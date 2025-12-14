@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import Backend.BB.entity.Feedback;
 import Backend.BB.repository.FeedbackRepository;
 
-@CrossOrigin(origins = "https://scheduling-algorithm-app-zw24.vercel.app/")
+@CrossOrigin(origins = "https://scheduling-algorithm-app-mnru.vercel.app")
 @RestController
 @RequestMapping("/feedback")
 public class FeedbackController {
