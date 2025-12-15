@@ -13,7 +13,7 @@ export default function Login() {
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}auth/login`, {
+      const res = await axios.post("http://localhost:8080/auth/login", {
         username: loginData.username,
         password: loginData.password,
       });
