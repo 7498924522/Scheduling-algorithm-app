@@ -15,11 +15,11 @@ public class FeedbackController {
     @Autowired
     private FeedbackRepository feedbackRepository;
 
-    // @GetMapping("/hello")
-    // public int hello()
-    // {
-    //     return 10;
-    // }
+    @GetMapping("/hello")
+    public int hello()
+    {
+        return 10;
+    }
 
     // Save Feedback
     @PostMapping("/save")
