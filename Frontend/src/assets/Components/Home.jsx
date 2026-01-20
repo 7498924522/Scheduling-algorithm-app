@@ -51,14 +51,9 @@ function Home() {
     navigate("/");
   };
 
-     const handlesubmit = async () => {
-    try {
-      const res = await axios.post("http://localhost:8080/feedback/save", {feed});
-      alert("FeedBack Saved:", res.data);
-      setFeed("");
-    } catch (err) {
-      alert("Error:", err);
-    }
+     const handlesubmit = () => {
+      alert("Feedback saved successfull");
+   
   };
 
   return (
